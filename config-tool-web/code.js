@@ -230,6 +230,13 @@ document.addEventListener("DOMContentLoaded", function () {
     setup_macros();
     setup_expressions();
     set_ui_state();
+
+    document.getElementById("fix_ok_button").addEventListener("click", fix_ok_button);
+    document.getElementById("remap_voice_control").addEventListener("click", remap_voice_control);
+
+    document.querySelectorAll('#our_descriptor_number_dropdown option').forEach(opt => {
+        if (parseInt(opt.value) >= 2) opt.hidden = true;
+    });
 });
 
 async function open_device() {
@@ -1200,6 +1207,44 @@ function add_mapping_onclick() {
     add_empty_mapping();
 }
 
+function fix_ok_button() {
+    const exists = config['mappings'].some(m =>
+        m['source_usage'] === '0x000c0041' && m['target_usage'] === '0x000c0041');
+    if (exists) {
+        display_error("OK button fix already exists.");
+        return;
+    }
+    let mapping = {
+        'source_usage': '0x000c0041',
+        'target_usage': '0x000c0041',
+        'layers': [0],
+        'sticky': false, 'tap': false, 'hold': false,
+        'scaling': 1000,
+        'source_port': 0, 'target_port': 0,
+    };
+    config['mappings'].push(mapping);
+    add_mapping(mapping);
+    switch_to_mappings_tab();
+}
+
+function remap_voice_control() {
+    let mapping = {
+        'source_usage': '0x000c00cf',
+        'target_usage': '0x00000000',
+        'layers': [0],
+        'sticky': false, 'tap': false, 'hold': false,
+        'scaling': 1000,
+        'source_port': 0, 'target_port': 0,
+    };
+    config['mappings'].push(mapping);
+    add_mapping(mapping);
+    switch_to_mappings_tab();
+    const lastMapping = document.getElementById('mappings').lastElementChild;
+    if (lastMapping) {
+        lastMapping.querySelector('.target_button').click();
+    }
+}
+
 function map_this_onclick(usage) {
     return function () {
         add_empty_mapping(usage);
@@ -1223,6 +1268,7 @@ function setup_usages_modals() {
 function setup_usage_modal(source_or_target) {
     const modal_element = document.getElementById(source_or_target + '_usage_modal');
     let usage_classes = {
+        'android_remote': modal_element.querySelector('.android_remote_usages'),
         'mouse': modal_element.querySelector('.mouse_usages'),
         'gamepad': modal_element.querySelector('.gamepad_usages'),
         'keyboard': modal_element.querySelector('.keyboard_usages'),
