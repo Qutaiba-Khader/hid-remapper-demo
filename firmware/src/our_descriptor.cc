@@ -121,25 +121,68 @@ const uint8_t our_report_descriptor_kb_mouse[] = {
     0x85, REPORT_ID_CONSUMER,  //   Report ID (REPORT_ID_CONSUMER)
     0x15, 0x00,                //   Logical Minimum (0)
     0x25, 0x01,                //   Logical Maximum (1)
-    0x09, 0x41,                //   Usage (Menu Pick)
-    0x0A, 0x21, 0x02,         //   Usage (AC Search)
-    0x0A, 0x23, 0x02,         //   Usage (AC Home)
-    0x0A, 0x24, 0x02,         //   Usage (AC Back)
+    // Power/Sleep
+    0x09, 0x30,                //   Usage (Power)
+    0x09, 0x32,                //   Usage (Sleep)
+    // Navigation
+    0x09, 0x40,                //   Usage (Menu)
+    0x09, 0x41,                //   Usage (Menu Pick) [DPAD Center]
+    0x09, 0x42,                //   Usage (Menu Up) [DPAD Up]
+    0x09, 0x43,                //   Usage (Menu Down) [DPAD Down]
+    0x09, 0x44,                //   Usage (Menu Left) [DPAD Left]
+    0x09, 0x45,                //   Usage (Menu Right) [DPAD Right]
+    0x09, 0x46,                //   Usage (Menu Escape)
+    // Info/Captions
+    0x09, 0x60,                //   Usage (Data on Screen) [Info]
+    0x09, 0x61,                //   Usage (Closed Caption) [Captions]
+    // Color buttons
+    0x09, 0x69,                //   Usage (Red)
+    0x09, 0x6A,                //   Usage (Green)
+    0x09, 0x6B,                //   Usage (Blue)
+    0x09, 0x6C,                //   Usage (Yellow)
+    // TV
+    0x09, 0x83,                //   Usage (Last) [Last Channel]
+    0x09, 0x89,                //   Usage (AL TV Viewer)
+    0x09, 0x8D,                //   Usage (Program Guide)
+    0x09, 0x9A,                //   Usage (Data on Screen) [DVR]
+    0x09, 0x9C,                //   Usage (Channel Increment)
+    0x09, 0x9D,                //   Usage (Channel Decrement)
+    // Media transport
+    0x09, 0xB0,                //   Usage (Play)
+    0x09, 0xB2,                //   Usage (Record)
+    0x09, 0xB3,                //   Usage (Fast Forward)
+    0x09, 0xB4,                //   Usage (Rewind)
     0x09, 0xB5,                //   Usage (Scan Next Track)
     0x09, 0xB6,                //   Usage (Scan Previous Track)
     0x09, 0xB7,                //   Usage (Stop)
+    0x09, 0xB8,                //   Usage (Eject)
     0x09, 0xCD,                //   Usage (Play/Pause)
+    0x09, 0xCF,                //   Usage (Voice Command) [Google Assistant]
+    // Volume
     0x09, 0xE2,                //   Usage (Mute)
     0x09, 0xE9,                //   Usage (Volume Increment)
     0x09, 0xEA,                //   Usage (Volume Decrement)
+    // 2-byte consumer usages
+    0x0A, 0x96, 0x01,         //   Usage (AL Internet Browser)
+    0x0A, 0xA2, 0x01,         //   Usage (AL Task Manager) [App Switch]
+    0x0A, 0xCB, 0x01,         //   Usage (AL Assistant)
+    0x0A, 0x21, 0x02,         //   Usage (AC Search)
+    0x0A, 0x23, 0x02,         //   Usage (AC Home)
+    0x0A, 0x24, 0x02,         //   Usage (AC Back)
+    0x0A, 0x25, 0x02,         //   Usage (AC Forward)
+    0x0A, 0x27, 0x02,         //   Usage (AC Refresh)
+    0x0A, 0x2A, 0x02,         //   Usage (AC Bookmarks)
+    0x0A, 0x2D, 0x02,         //   Usage (AC Zoom In)
+    0x0A, 0x2E, 0x02,         //   Usage (AC Zoom Out)
+    0x0A, 0x32, 0x02,         //   Usage (AC Fullscreen)
     0x75, 0x01,                //   Report Size (1)
-    0x95, 0x0B,                //   Report Count (11)
-    0x81, 0x02,                //   Input (Data,Var,Abs,No Wrap,Linear,Preferred State,No Null Position)
+    0x95, 0x2E,                //   Report Count (46)
+    0x81, 0x02,                //   Input (Data,Var,Abs)
     0x05, 0x0B,                //   Usage Page (Telephony)
     0x09, 0x2F,                //   Usage (Phone Mute)
     0x95, 0x01,                //   Report Count (1)
-    0x81, 0x02,                //   Input (Data,Var,Abs,No Wrap,Linear,Preferred State,No Null Position)
-    0x95, 0x04,                //   Report Count (4)
+    0x81, 0x02,                //   Input (Data,Var,Abs)
+    0x95, 0x01,                //   Report Count (1)
     0x81, 0x01,                //   Input (Const) - padding to byte boundary
     0xC0,                      // End Collection
 };
@@ -256,25 +299,68 @@ const uint8_t our_report_descriptor_absolute[] = {
     0x85, REPORT_ID_CONSUMER,  //   Report ID (REPORT_ID_CONSUMER)
     0x15, 0x00,                //   Logical Minimum (0)
     0x25, 0x01,                //   Logical Maximum (1)
-    0x09, 0x41,                //   Usage (Menu Pick)
-    0x0A, 0x21, 0x02,         //   Usage (AC Search)
-    0x0A, 0x23, 0x02,         //   Usage (AC Home)
-    0x0A, 0x24, 0x02,         //   Usage (AC Back)
+    // Power/Sleep
+    0x09, 0x30,                //   Usage (Power)
+    0x09, 0x32,                //   Usage (Sleep)
+    // Navigation
+    0x09, 0x40,                //   Usage (Menu)
+    0x09, 0x41,                //   Usage (Menu Pick) [DPAD Center]
+    0x09, 0x42,                //   Usage (Menu Up) [DPAD Up]
+    0x09, 0x43,                //   Usage (Menu Down) [DPAD Down]
+    0x09, 0x44,                //   Usage (Menu Left) [DPAD Left]
+    0x09, 0x45,                //   Usage (Menu Right) [DPAD Right]
+    0x09, 0x46,                //   Usage (Menu Escape)
+    // Info/Captions
+    0x09, 0x60,                //   Usage (Data on Screen) [Info]
+    0x09, 0x61,                //   Usage (Closed Caption) [Captions]
+    // Color buttons
+    0x09, 0x69,                //   Usage (Red)
+    0x09, 0x6A,                //   Usage (Green)
+    0x09, 0x6B,                //   Usage (Blue)
+    0x09, 0x6C,                //   Usage (Yellow)
+    // TV
+    0x09, 0x83,                //   Usage (Last) [Last Channel]
+    0x09, 0x89,                //   Usage (AL TV Viewer)
+    0x09, 0x8D,                //   Usage (Program Guide)
+    0x09, 0x9A,                //   Usage (Data on Screen) [DVR]
+    0x09, 0x9C,                //   Usage (Channel Increment)
+    0x09, 0x9D,                //   Usage (Channel Decrement)
+    // Media transport
+    0x09, 0xB0,                //   Usage (Play)
+    0x09, 0xB2,                //   Usage (Record)
+    0x09, 0xB3,                //   Usage (Fast Forward)
+    0x09, 0xB4,                //   Usage (Rewind)
     0x09, 0xB5,                //   Usage (Scan Next Track)
     0x09, 0xB6,                //   Usage (Scan Previous Track)
     0x09, 0xB7,                //   Usage (Stop)
+    0x09, 0xB8,                //   Usage (Eject)
     0x09, 0xCD,                //   Usage (Play/Pause)
+    0x09, 0xCF,                //   Usage (Voice Command) [Google Assistant]
+    // Volume
     0x09, 0xE2,                //   Usage (Mute)
     0x09, 0xE9,                //   Usage (Volume Increment)
     0x09, 0xEA,                //   Usage (Volume Decrement)
+    // 2-byte consumer usages
+    0x0A, 0x96, 0x01,         //   Usage (AL Internet Browser)
+    0x0A, 0xA2, 0x01,         //   Usage (AL Task Manager) [App Switch]
+    0x0A, 0xCB, 0x01,         //   Usage (AL Assistant)
+    0x0A, 0x21, 0x02,         //   Usage (AC Search)
+    0x0A, 0x23, 0x02,         //   Usage (AC Home)
+    0x0A, 0x24, 0x02,         //   Usage (AC Back)
+    0x0A, 0x25, 0x02,         //   Usage (AC Forward)
+    0x0A, 0x27, 0x02,         //   Usage (AC Refresh)
+    0x0A, 0x2A, 0x02,         //   Usage (AC Bookmarks)
+    0x0A, 0x2D, 0x02,         //   Usage (AC Zoom In)
+    0x0A, 0x2E, 0x02,         //   Usage (AC Zoom Out)
+    0x0A, 0x32, 0x02,         //   Usage (AC Fullscreen)
     0x75, 0x01,                //   Report Size (1)
-    0x95, 0x0B,                //   Report Count (11)
-    0x81, 0x02,                //   Input (Data,Var,Abs,No Wrap,Linear,Preferred State,No Null Position)
+    0x95, 0x2E,                //   Report Count (46)
+    0x81, 0x02,                //   Input (Data,Var,Abs)
     0x05, 0x0B,                //   Usage Page (Telephony)
     0x09, 0x2F,                //   Usage (Phone Mute)
     0x95, 0x01,                //   Report Count (1)
-    0x81, 0x02,                //   Input (Data,Var,Abs,No Wrap,Linear,Preferred State,No Null Position)
-    0x95, 0x04,                //   Report Count (4)
+    0x81, 0x02,                //   Input (Data,Var,Abs)
+    0x95, 0x01,                //   Report Count (1)
     0x81, 0x01,                //   Input (Const) - padding to byte boundary
     0xC0,                      // End Collection
 };
