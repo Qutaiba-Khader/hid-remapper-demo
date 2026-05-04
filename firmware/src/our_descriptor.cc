@@ -122,6 +122,9 @@ const uint8_t our_report_descriptor_kb_mouse[] = {
     0x15, 0x00,                //   Logical Minimum (0)
     0x25, 0x01,                //   Logical Maximum (1)
     0x09, 0x41,                //   Usage (Menu Pick)
+    0x0A, 0x21, 0x02,         //   Usage (AC Search)
+    0x0A, 0x23, 0x02,         //   Usage (AC Home)
+    0x0A, 0x24, 0x02,         //   Usage (AC Back)
     0x09, 0xB5,                //   Usage (Scan Next Track)
     0x09, 0xB6,                //   Usage (Scan Previous Track)
     0x09, 0xB7,                //   Usage (Stop)
@@ -130,13 +133,13 @@ const uint8_t our_report_descriptor_kb_mouse[] = {
     0x09, 0xE9,                //   Usage (Volume Increment)
     0x09, 0xEA,                //   Usage (Volume Decrement)
     0x75, 0x01,                //   Report Size (1)
-    0x95, 0x08,                //   Report Count (8)
+    0x95, 0x0B,                //   Report Count (11)
     0x81, 0x02,                //   Input (Data,Var,Abs,No Wrap,Linear,Preferred State,No Null Position)
     0x05, 0x0B,                //   Usage Page (Telephony)
     0x09, 0x2F,                //   Usage (Phone Mute)
     0x95, 0x01,                //   Report Count (1)
     0x81, 0x02,                //   Input (Data,Var,Abs,No Wrap,Linear,Preferred State,No Null Position)
-    0x95, 0x07,                //   Report Count (7)
+    0x95, 0x04,                //   Report Count (4)
     0x81, 0x01,                //   Input (Const) - padding to byte boundary
     0xC0,                      // End Collection
 };
@@ -254,6 +257,9 @@ const uint8_t our_report_descriptor_absolute[] = {
     0x15, 0x00,                //   Logical Minimum (0)
     0x25, 0x01,                //   Logical Maximum (1)
     0x09, 0x41,                //   Usage (Menu Pick)
+    0x0A, 0x21, 0x02,         //   Usage (AC Search)
+    0x0A, 0x23, 0x02,         //   Usage (AC Home)
+    0x0A, 0x24, 0x02,         //   Usage (AC Back)
     0x09, 0xB5,                //   Usage (Scan Next Track)
     0x09, 0xB6,                //   Usage (Scan Previous Track)
     0x09, 0xB7,                //   Usage (Stop)
@@ -262,13 +268,13 @@ const uint8_t our_report_descriptor_absolute[] = {
     0x09, 0xE9,                //   Usage (Volume Increment)
     0x09, 0xEA,                //   Usage (Volume Decrement)
     0x75, 0x01,                //   Report Size (1)
-    0x95, 0x08,                //   Report Count (8)
+    0x95, 0x0B,                //   Report Count (11)
     0x81, 0x02,                //   Input (Data,Var,Abs,No Wrap,Linear,Preferred State,No Null Position)
     0x05, 0x0B,                //   Usage Page (Telephony)
     0x09, 0x2F,                //   Usage (Phone Mute)
     0x95, 0x01,                //   Report Count (1)
     0x81, 0x02,                //   Input (Data,Var,Abs,No Wrap,Linear,Preferred State,No Null Position)
-    0x95, 0x07,                //   Report Count (7)
+    0x95, 0x04,                //   Report Count (4)
     0x81, 0x01,                //   Input (Const) - padding to byte boundary
     0xC0,                      // End Collection
 };
