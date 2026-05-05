@@ -148,17 +148,7 @@ let config = {
     'gpio_output_mode': 0,
     'input_labels': 0,
     'normalize_gamepad_inputs': true,
-    mappings: [{
-        'source_usage': '0x00000000',
-        'target_usage': '0x00000000',
-        'layers': [0],
-        'sticky': false,
-        'tap': false,
-        'hold': false,
-        'scaling': DEFAULT_SCALING,
-        'source_port': 0,
-        'target_port': 0,
-    }],
+    mappings: [],
     macros: [
         [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [],
         [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], []
@@ -233,6 +223,19 @@ document.addEventListener("DOMContentLoaded", function () {
 
     document.getElementById("fix_ok_button").addEventListener("click", fix_ok_button);
     document.getElementById("remap_voice_control").addEventListener("click", remap_voice_control);
+
+    document.querySelectorAll('.combo_badge').forEach(badge => {
+        badge.addEventListener("click", () => create_macro_from_combo(badge));
+    });
+
+    document.getElementById("create_layer_switcher").addEventListener("click", create_layer_switcher);
+
+    document.querySelectorAll('.layer_switcher_check:not(:disabled)').forEach(cb => {
+        cb.addEventListener("change", update_layer_switcher_hint);
+    });
+    update_layer_switcher_hint();
+
+    document.getElementById("toggle_reorder").addEventListener("click", toggle_reorder_mode);
 
     document.querySelectorAll('#our_descriptor_number_dropdown option').forEach(opt => {
         if (parseInt(opt.value) >= 2) opt.hidden = true;
@@ -828,6 +831,11 @@ function add_mapping(mapping) {
     target_button.title = mapping['target_usage'];
     target_button.addEventListener("click", show_usage_modal(mapping, 'target', clone));
     set_port_badge(target_button, mapping['target_port']);
+    setup_drag(clone);
+    if (reorder_mode) {
+        clone.draggable = true;
+        clone.querySelector('.drag_handle_col').classList.remove('d-none');
+    }
     container.appendChild(clone);
     set_forced_layers(mapping, clone);
     set_forced_flags(mapping, clone);
@@ -1183,8 +1191,46 @@ function show_usage_modal(mapping_, source_or_target, element_) {
                 mapping[source_or_target + '_port'] = hub_port;
             });
         }
+        modal_element.setAttribute('data-usage-mode', source_or_target);
         modal_.show();
     };
+}
+
+function apply_custom_hex(modal_element) {
+    const hex_input = modal_element.querySelector('.custom_hex_input');
+    let raw = hex_input.value.trim().replace(/^0x/i, '');
+    if (!/^[0-9a-fA-F]{1,8}$/.test(raw)) {
+        hex_input.classList.add('is-invalid');
+        return;
+    }
+    hex_input.classList.remove('is-invalid');
+    const usage = '0x' + raw.padStart(8, '0');
+    const mode = modal_element.getAttribute('data-usage-mode') || 'target';
+
+    const mapping = modal_return_mapping;
+    const element = (mode == 'macro_item') ? modal_return_element :
+        modal_return_element.querySelector('.' + mode + '_button');
+
+    if (mapping !== null) {
+        mapping[mode + '_usage'] = usage;
+    }
+    element.querySelector('.button_label').innerText =
+        mode == "source" ? readable_usage_name(usage) : readable_target_usage_name(usage);
+    element.title = usage;
+
+    if (mode == "target") {
+        set_forced_layers(mapping, element.closest(".mapping_container"));
+    }
+    if (mode == "source") {
+        set_forced_flags(mapping, element.closest(".mapping_container"));
+    }
+    if (mode == "macro_item") {
+        element.setAttribute('data-hid-usage', usage);
+        set_macros_config_from_ui_state();
+    }
+
+    const modal_ = modal_element.id.startsWith('source') ? source_modal : target_modal;
+    modal_.hide();
 }
 
 function add_empty_mapping(source_usage = '0x00000000') {
@@ -1208,22 +1254,32 @@ function add_mapping_onclick() {
 }
 
 function fix_ok_button() {
-    const exists = config['mappings'].some(m =>
-        m['source_usage'] === '0x000c0041' && m['target_usage'] === '0x000c0041');
-    if (exists) {
-        display_error("OK button fix already exists.");
+    const sources = [
+        { usage: '0x00070028', name: 'Keyboard Enter' },
+        { usage: '0x00070058', name: 'Keypad Enter' },
+    ];
+    const target = '0x000c0041';
+    let added = 0;
+    for (const src of sources) {
+        const exists = config['mappings'].some(m =>
+            m['source_usage'] === src.usage && m['target_usage'] === target);
+        if (exists) continue;
+        let mapping = {
+            'source_usage': src.usage,
+            'target_usage': target,
+            'layers': [0],
+            'sticky': false, 'tap': false, 'hold': false,
+            'scaling': 1000,
+            'source_port': 0, 'target_port': 0,
+        };
+        config['mappings'].push(mapping);
+        add_mapping(mapping);
+        added++;
+    }
+    if (added === 0) {
+        display_error("OK button fix already applied.");
         return;
     }
-    let mapping = {
-        'source_usage': '0x000c0041',
-        'target_usage': '0x000c0041',
-        'layers': [0],
-        'sticky': false, 'tap': false, 'hold': false,
-        'scaling': 1000,
-        'source_port': 0, 'target_port': 0,
-    };
-    config['mappings'].push(mapping);
-    add_mapping(mapping);
     switch_to_mappings_tab();
 }
 
@@ -1243,6 +1299,175 @@ function remap_voice_control() {
     if (lastMapping) {
         lastMapping.querySelector('.target_button').click();
     }
+}
+
+function create_macro_from_combo(badge) {
+    const keys = badge.dataset.keys.split(',');
+    let target_index = -1;
+    for (let j = 0; j < NMACROS; j++) {
+        if (config['macros'][j].length === 0) {
+            target_index = j;
+            break;
+        }
+    }
+    if (target_index === -1) {
+        display_error("No empty macro slot available.");
+        return;
+    }
+    config['macros'][target_index] = [keys];
+    const target_element = document.getElementById('macro_' + target_index);
+    clear_children(target_element.querySelector('.macro_entries'));
+    const entry_element = add_macro_entry(target_element);
+    for (const usage of keys) {
+        const item_element = add_macro_item(entry_element);
+        const button = item_element.querySelector('.macro_item_usage');
+        button.setAttribute('data-hid-usage', usage);
+        button.querySelector('.button_label').innerText = readable_usage_name(usage);
+    }
+    set_macro_previews();
+    bootstrap.Tab.getOrCreateInstance(document.getElementById("nav-macros-tab")).show();
+    new bootstrap.Collapse(document.getElementById('collapse_' + target_index), { toggle: true });
+}
+
+let pending_layer_switcher = null;
+
+function update_layer_switcher_hint() {
+    const layers = get_selected_switcher_layers();
+    const hint = document.getElementById('layer_switcher_hint');
+    if (layers.length < 2) {
+        hint.textContent = 'Select at least 2 layers.';
+    } else if (layers.length === 2) {
+        hint.textContent = 'Toggle: Layer ' + layers[0] + ' ↔ Layer ' + layers[1] + ' (Sticky)';
+    } else {
+        hint.textContent = 'Cycle: ' + layers.map(l => 'L' + l).join(' → ') + ' → L' + layers[0];
+    }
+}
+
+function get_selected_switcher_layers() {
+    const checks = document.querySelectorAll('.layer_switcher_check:checked');
+    return Array.from(checks).map(cb => parseInt(cb.value)).sort();
+}
+
+function create_layer_switcher() {
+    const layers = get_selected_switcher_layers();
+    if (layers.length < 2) {
+        display_error("Select at least 2 layers.");
+        return;
+    }
+    pending_layer_switcher = layers;
+    const modal_element = document.getElementById('source_usage_modal');
+    modal_element.querySelectorAll('.usage_button').forEach((button) => {
+        let clone = button.cloneNode(true);
+        button.parentNode.replaceChild(clone, button);
+        clone.addEventListener("click", function () {
+            source_modal.hide();
+            const source_usage = clone.getAttribute('data-hid-usage');
+            finish_layer_switcher(source_usage);
+        });
+    });
+    const modal_el = document.getElementById('source_usage_modal');
+    modal_el.addEventListener('shown.bs.modal', function handler() {
+        modal_el.removeEventListener('shown.bs.modal', handler);
+        modal_el.querySelector('.modal-body').scrollTop = 0;
+        modal_el.scrollIntoView({ behavior: 'instant' });
+    });
+    source_modal.show();
+}
+
+function finish_layer_switcher(source_usage) {
+    const layers = pending_layer_switcher;
+    pending_layer_switcher = null;
+    if (!layers) return;
+
+    if (layers.length === 2) {
+        const from_layer = layers[0];
+        const to_layer = layers[1];
+        const target_usage = '0xfff1000' + to_layer;
+        let mapping = {
+            'source_usage': source_usage,
+            'target_usage': target_usage,
+            'layers': [from_layer],
+            'sticky': true,
+            'tap': false, 'hold': false,
+            'scaling': 1000,
+            'source_port': 0, 'target_port': 0,
+        };
+        config['mappings'].push(mapping);
+        add_mapping(mapping);
+    } else {
+        for (let i = 0; i < layers.length; i++) {
+            const current = layers[i];
+            const next = layers[(i + 1) % layers.length];
+            const target_usage = '0xfff1000' + next;
+            let mapping = {
+                'source_usage': source_usage,
+                'target_usage': target_usage,
+                'layers': [current],
+                'sticky': false,
+                'tap': false, 'hold': false,
+                'scaling': 1000,
+                'source_port': 0, 'target_port': 0,
+            };
+            config['mappings'].push(mapping);
+            add_mapping(mapping);
+        }
+    }
+    switch_to_mappings_tab();
+}
+
+let reorder_mode = false;
+let drag_source_el = null;
+
+function toggle_reorder_mode() {
+    reorder_mode = !reorder_mode;
+    const btn = document.getElementById('toggle_reorder');
+    btn.classList.toggle('btn-outline-secondary', !reorder_mode);
+    btn.classList.toggle('btn-primary', reorder_mode);
+    document.querySelectorAll('#mappings .drag_handle_col').forEach(h => {
+        h.classList.toggle('d-none', !reorder_mode);
+    });
+    document.querySelectorAll('#mappings .mapping_container').forEach(row => {
+        row.draggable = reorder_mode;
+    });
+}
+
+function setup_drag(clone) {
+    clone.addEventListener('dragstart', function (e) {
+        if (!reorder_mode) { e.preventDefault(); return; }
+        drag_source_el = clone;
+        clone.style.opacity = '0.4';
+        e.dataTransfer.effectAllowed = 'move';
+    });
+    clone.addEventListener('dragend', function () {
+        clone.style.opacity = '1';
+        document.querySelectorAll('#mappings .mapping_container').forEach(r => r.classList.remove('drag_over'));
+        drag_source_el = null;
+    });
+    clone.addEventListener('dragover', function (e) {
+        if (!drag_source_el || drag_source_el === clone) return;
+        e.preventDefault();
+        e.dataTransfer.dropEffect = 'move';
+        clone.classList.add('drag_over');
+    });
+    clone.addEventListener('dragleave', function () {
+        clone.classList.remove('drag_over');
+    });
+    clone.addEventListener('drop', function (e) {
+        e.preventDefault();
+        if (!drag_source_el || drag_source_el === clone) return;
+        clone.classList.remove('drag_over');
+        const container = document.getElementById('mappings');
+        const rows = Array.from(container.children);
+        const from_idx = rows.indexOf(drag_source_el);
+        const to_idx = rows.indexOf(clone);
+        if (from_idx < to_idx) {
+            container.insertBefore(drag_source_el, clone.nextSibling);
+        } else {
+            container.insertBefore(drag_source_el, clone);
+        }
+        const [moved] = config['mappings'].splice(from_idx, 1);
+        config['mappings'].splice(to_idx, 0, moved);
+    });
 }
 
 function map_this_onclick(usage) {
@@ -1269,24 +1494,33 @@ function setup_usage_modal(source_or_target) {
     const modal_element = document.getElementById(source_or_target + '_usage_modal');
     let usage_classes = {
         'android_remote': modal_element.querySelector('.android_remote_usages'),
+        'samsung_tv': modal_element.querySelector('.samsung_tv_usages'),
         'mouse': modal_element.querySelector('.mouse_usages'),
         'gamepad': modal_element.querySelector('.gamepad_usages'),
         'keyboard': modal_element.querySelector('.keyboard_usages'),
         'media': modal_element.querySelector('.media_usages'),
+        'layers_usage': modal_element.querySelector('.layers_usage'),
+        'macros_usage': modal_element.querySelector('.macros_usage'),
+        'expressions_usage': modal_element.querySelector('.expressions_usage'),
+        'registers_usage': modal_element.querySelector('.registers_usage'),
+        'gpios_usage': modal_element.querySelector('.gpios_usage'),
+        'analogs_usage': modal_element.querySelector('.analogs_usage'),
         'other': modal_element.querySelector('.other_usages'),
         'extra': modal_element.querySelector('.extra_usages'),
     };
     for (const [usage_class, element] of Object.entries(usage_classes)) {
-        clear_children(element);
+        if (element) element.querySelectorAll('.usage_button').forEach(btn => btn.remove());
     }
     let template = document.getElementById('usage_button_template');
     const add_usage_buttons = (relevant_usages) => {
         for (const [usage, usage_def] of Object.entries(relevant_usages)) {
+            const container = usage_classes[usage_def['class']];
+            if (!container) continue;
             let clone = template.content.cloneNode(true).firstElementChild;
             clone.innerText = usage_def['name'];
             clone.title = usage;
             clone.setAttribute('data-hid-usage', usage);
-            usage_classes[usage_def['class']].appendChild(clone);
+            container.appendChild(clone);
         }
     }
 
@@ -1322,9 +1556,19 @@ function setup_usage_modal(source_or_target) {
             });
         }
     });
+    const hex_input = modal_element.querySelector('.custom_hex_input');
+    const hex_apply = modal_element.querySelector('.apply_custom_hex');
+    if (hex_apply) {
+        hex_apply.addEventListener("click", () => apply_custom_hex(modal_element));
+        hex_input.addEventListener("keydown", (e) => {
+            if (e.key === 'Enter') { e.preventDefault(); hex_apply.click(); }
+        });
+    }
+
     modal_element.addEventListener('show.bs.modal', () => {
         search_box.value = "";
         usage_search_onchange(search_box)();
+        if (hex_input) { hex_input.value = ''; hex_input.classList.remove('is-invalid'); }
     });
     modal_element.addEventListener('shown.bs.modal', () => {
         search_box.focus();
@@ -1344,6 +1588,10 @@ function setup_macros() {
             const entry_element = add_macro_entry(clone);
             add_macro_item(entry_element);
             set_macros_config_from_ui_state();
+        });
+        clone.querySelector('.clone_macro_button').addEventListener("click", (e) => {
+            e.stopPropagation();
+            clone_macro(i);
         });
         macros_container.appendChild(clone);
     }
@@ -1401,6 +1649,38 @@ function set_macros_config_from_ui_state() {
     }
 
     set_macro_previews();
+}
+
+function clone_macro(source_index) {
+    if (config['macros'][source_index].length === 0) {
+        display_error("Macro " + (source_index + 1) + " is empty, nothing to clone.");
+        return;
+    }
+    let target_index = -1;
+    for (let j = 0; j < NMACROS; j++) {
+        if (j !== source_index && config['macros'][j].length === 0) {
+            target_index = j;
+            break;
+        }
+    }
+    if (target_index === -1) {
+        display_error("No empty macro slot available.");
+        return;
+    }
+    config['macros'][target_index] = structuredClone(config['macros'][source_index]);
+    const target_element = document.getElementById('macro_' + target_index);
+    clear_children(target_element.querySelector('.macro_entries'));
+    for (const entry of config['macros'][target_index]) {
+        const entry_element = add_macro_entry(target_element);
+        for (const usage of entry) {
+            const item_element = add_macro_item(entry_element);
+            const button = item_element.querySelector('.macro_item_usage');
+            button.setAttribute('data-hid-usage', usage);
+            button.querySelector('.button_label').innerText = readable_usage_name(usage);
+        }
+    }
+    set_macro_previews();
+    new bootstrap.Collapse(document.getElementById('collapse_' + target_index), { toggle: true });
 }
 
 function setup_expressions() {
@@ -1507,7 +1787,15 @@ function load_example(n) {
 function setup_examples() {
     const element = document.getElementById("examples");
     const template = document.getElementById("example_template");
+    const keep = new Set([
+        'map caps lock to control',
+        'swap left/right mouse buttons',
+        'disable windows keys',
+        'macros: double-click and "Hello, world!"',
+        'tap-hold: middle button is middle-click when clicked, but switches layer when held',
+    ]);
     for (let i = 0; i < examples.length; i++) {
+        if (!keep.has(examples[i]['description'])) continue;
         const clone = template.content.cloneNode(true).firstElementChild;
         const link = clone.querySelector('a');
         link.innerText = examples[i]['description'];
@@ -1667,7 +1955,7 @@ function validate_ui_expressions() {
 function input_report_received(event) {
     if (event.reportId == REPORT_ID_MONITOR) {
         document.querySelectorAll('.monitor_row').forEach((element) => {
-            element.classList.remove('bg-light');
+            element.classList.remove('monitor_active');
         });
         for (let i = 0; i < 7; i++) {
             const usage = "0x" + event.data.getUint32(i * 9, true).toString(16).padStart(8, "0");
@@ -1704,7 +1992,7 @@ function update_monitor_ui(usage, value, hub_port) {
     document.getElementById('monitor_header').classList.remove('d-none');
 
     element.querySelector('.monitor_last_value').innerText = value;
-    element.classList.add('bg-light');
+    element.classList.add('monitor_active');
     const key = usage + '_' + hub_port;
     if (!(key in monitor_min_val) || (value < monitor_min_val[key])) {
         monitor_min_val[key] = value;

@@ -33,24 +33,43 @@ body {
   border-color: var(--accent-hover);
 }
 
-/* Nav tabs */
+/* Nav tabs — pill-style buttons */
 .nav-tabs {
-  border-bottom-color: var(--border-color);
+  border-bottom: none;
+  flex-wrap: nowrap !important;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+  gap: 0.35rem;
+  padding: 0.4rem;
+  background-color: var(--bg-surface);
+  border-radius: 0.75rem;
+}
+.nav-tabs::-webkit-scrollbar {
+  display: none;
 }
 .nav-tabs .nav-link {
   color: var(--text-muted);
   background-color: transparent;
-  border-color: transparent;
+  border: 1px solid transparent;
+  border-radius: 0.5rem;
+  white-space: nowrap;
+  padding: 0.45rem 0.7rem;
+  font-size: 0.82rem;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  transition: all 0.15s ease;
 }
 .nav-tabs .nav-link:hover {
-  color: var(--text-primary);
-  border-color: var(--border-color) var(--border-color) transparent;
-  background-color: var(--bg-surface);
+  color: #fff;
+  background-color: var(--bg-hover);
+  border-color: var(--accent);
 }
 .nav-tabs .nav-link.active {
   color: #fff;
   background-color: var(--accent);
   border-color: var(--accent);
+  box-shadow: 0 2px 8px rgba(74, 0, 224, 0.3);
 }
 
 /* Form controls */
@@ -168,12 +187,53 @@ table, .table {
   letter-spacing: 0.08em;
 }
 
+/* Macro clone button */
+.clone_macro_button {
+  background-color: var(--bg-primary);
+  border-color: var(--border-color);
+  color: var(--text-muted);
+}
+.clone_macro_button:hover {
+  background-color: var(--accent);
+  border-color: var(--accent);
+  color: #fff;
+}
+
 /* Monitor rows */
 .monitor_row {
   background-color: var(--bg-surface);
+  color: var(--text-primary);
 }
 .monitor_row:nth-child(even) {
   background-color: var(--bg-hover);
+}
+.monitor_active {
+  background-color: var(--accent) !important;
+  color: #fff !important;
+}
+
+/* Expression placeholder */
+.expression_input::placeholder {
+  color: var(--text-muted);
+  opacity: 0.6;
+  font-size: 0.85em;
+}
+
+/* Layer help card */
+#layer_help .card-body {
+  background-color: var(--bg-primary);
+  border-color: var(--border-color);
+  color: var(--text-muted);
+}
+
+/* Clickable combo badges */
+.combo_badge {
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+.combo_badge:hover {
+  background-color: var(--accent) !important;
+  transform: scale(1.05);
 }
 
 /* Links */
@@ -194,4 +254,15 @@ a.text-reset:hover { color: var(--accent-hover) !important; }
 }
 ::-webkit-scrollbar-thumb:hover {
   background: var(--text-muted);
+}
+
+/* Drag-and-drop reorder */
+.mapping_container.drag_over {
+  border-top: 2px solid var(--accent) !important;
+}
+.drag_handle_col {
+  cursor: grab;
+}
+.drag_handle_col:active {
+  cursor: grabbing;
 }

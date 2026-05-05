@@ -135,20 +135,39 @@ const uint8_t our_report_descriptor_kb_mouse[] = {
     // Info/Captions
     0x09, 0x60,                //   Usage (Data on Screen) [Info]
     0x09, 0x61,                //   Usage (Closed Caption) [Captions]
+    0x09, 0x65,                //   Usage (Snapshot) [Screen Capture]
+    0x09, 0x66,                //   Usage (Still) [Freeze Frame]
+    // PIP
+    0x09, 0x67,                //   Usage (PIP Toggle)
+    0x09, 0x68,                //   Usage (PIP Swap)
     // Color buttons
     0x09, 0x69,                //   Usage (Red)
     0x09, 0x6A,                //   Usage (Green)
     0x09, 0x6B,                //   Usage (Blue)
     0x09, 0x6C,                //   Usage (Yellow)
-    // TV
+    0x09, 0x6D,                //   Usage (Aspect Ratio)
+    0x09, 0x6F,                //   Usage (Brightness Up)
+    0x09, 0x70,                //   Usage (Brightness Down)
+    // TV / Input selection
+    0x09, 0x82,                //   Usage (Source) [Input Select]
     0x09, 0x83,                //   Usage (Last) [Last Channel]
+    0x09, 0x84,                //   Usage (Enter Channel)
+    0x09, 0x88,                //   Usage (Media Select PC)
     0x09, 0x89,                //   Usage (AL TV Viewer)
+    0x09, 0x8B,                //   Usage (Media Select DVD)
     0x09, 0x8D,                //   Usage (Program Guide)
+    0x09, 0x8F,                //   Usage (Games)
+    0x09, 0x93,                //   Usage (Media Select Tuner)
+    0x09, 0x94,                //   Usage (Exit)
+    0x09, 0x95,                //   Usage (Help)
+    0x09, 0x97,                //   Usage (Media Select Cable)
+    0x09, 0x98,                //   Usage (Media Select Satellite)
     0x09, 0x9A,                //   Usage (Data on Screen) [DVR]
     0x09, 0x9C,                //   Usage (Channel Increment)
     0x09, 0x9D,                //   Usage (Channel Decrement)
     // Media transport
     0x09, 0xB0,                //   Usage (Play)
+    0x09, 0xB1,                //   Usage (Pause)
     0x09, 0xB2,                //   Usage (Record)
     0x09, 0xB3,                //   Usage (Fast Forward)
     0x09, 0xB4,                //   Usage (Rewind)
@@ -156,15 +175,28 @@ const uint8_t our_report_descriptor_kb_mouse[] = {
     0x09, 0xB6,                //   Usage (Scan Previous Track)
     0x09, 0xB7,                //   Usage (Stop)
     0x09, 0xB8,                //   Usage (Eject)
+    0x09, 0xB9,                //   Usage (Shuffle)
+    0x09, 0xBC,                //   Usage (Repeat)
+    0x09, 0xBF,                //   Usage (Slow)
+    0x09, 0xC0,                //   Usage (Frame Forward) [Step Forward]
+    0x09, 0xC1,                //   Usage (Frame Back) [Step Back]
     0x09, 0xCD,                //   Usage (Play/Pause)
     0x09, 0xCF,                //   Usage (Voice Command) [Google Assistant]
+    0x09, 0xD8,                //   Usage (Dictate)
+    0x09, 0xD9,                //   Usage (Emoji Picker)
     // Volume
     0x09, 0xE2,                //   Usage (Mute)
     0x09, 0xE9,                //   Usage (Volume Increment)
     0x09, 0xEA,                //   Usage (Volume Decrement)
     // 2-byte consumer usages
+    0x0A, 0x73, 0x01,         //   Usage (Audio Track)
+    0x0A, 0x93, 0x01,         //   Usage (AL Media Player)
     0x0A, 0x96, 0x01,         //   Usage (AL Internet Browser)
+    0x0A, 0x9C, 0x01,         //   Usage (AL Logoff) [Profile Switch]
+    0x0A, 0x9E, 0x01,         //   Usage (AL Lock/Screensaver) [Lock Screen]
+    0x0A, 0x9F, 0x01,         //   Usage (AL Control Panel) [Settings]
     0x0A, 0xA2, 0x01,         //   Usage (AL Task Manager) [App Switch]
+    0x0A, 0xB1, 0x01,         //   Usage (AL Screen Saver) [Ambient/Screensaver]
     0x0A, 0xCB, 0x01,         //   Usage (AL Assistant)
     0x0A, 0x21, 0x02,         //   Usage (AC Search)
     0x0A, 0x23, 0x02,         //   Usage (AC Home)
@@ -175,14 +207,19 @@ const uint8_t our_report_descriptor_kb_mouse[] = {
     0x0A, 0x2D, 0x02,         //   Usage (AC Zoom In)
     0x0A, 0x2E, 0x02,         //   Usage (AC Zoom Out)
     0x0A, 0x32, 0x02,         //   Usage (AC Fullscreen)
+    0x0A, 0x33, 0x02,         //   Usage (AC Scroll Up)
+    0x0A, 0x34, 0x02,         //   Usage (AC Scroll Down)
+    0x0A, 0x9D, 0x02,         //   Usage (AC Language Switch)
+    0x0A, 0x9F, 0x02,         //   Usage (AC Recent Apps)
+    0x0A, 0xA2, 0x02,         //   Usage (AC All Apps)
     0x75, 0x01,                //   Report Size (1)
-    0x95, 0x2E,                //   Report Count (46)
+    0x95, 0x52,                //   Report Count (82)
     0x81, 0x02,                //   Input (Data,Var,Abs)
     0x05, 0x0B,                //   Usage Page (Telephony)
     0x09, 0x2F,                //   Usage (Phone Mute)
     0x95, 0x01,                //   Report Count (1)
     0x81, 0x02,                //   Input (Data,Var,Abs)
-    0x95, 0x01,                //   Report Count (1)
+    0x95, 0x05,                //   Report Count (5)
     0x81, 0x01,                //   Input (Const) - padding to byte boundary
     0xC0,                      // End Collection
 };
@@ -313,20 +350,39 @@ const uint8_t our_report_descriptor_absolute[] = {
     // Info/Captions
     0x09, 0x60,                //   Usage (Data on Screen) [Info]
     0x09, 0x61,                //   Usage (Closed Caption) [Captions]
+    0x09, 0x65,                //   Usage (Snapshot) [Screen Capture]
+    0x09, 0x66,                //   Usage (Still) [Freeze Frame]
+    // PIP
+    0x09, 0x67,                //   Usage (PIP Toggle)
+    0x09, 0x68,                //   Usage (PIP Swap)
     // Color buttons
     0x09, 0x69,                //   Usage (Red)
     0x09, 0x6A,                //   Usage (Green)
     0x09, 0x6B,                //   Usage (Blue)
     0x09, 0x6C,                //   Usage (Yellow)
-    // TV
+    0x09, 0x6D,                //   Usage (Aspect Ratio)
+    0x09, 0x6F,                //   Usage (Brightness Up)
+    0x09, 0x70,                //   Usage (Brightness Down)
+    // TV / Input selection
+    0x09, 0x82,                //   Usage (Source) [Input Select]
     0x09, 0x83,                //   Usage (Last) [Last Channel]
+    0x09, 0x84,                //   Usage (Enter Channel)
+    0x09, 0x88,                //   Usage (Media Select PC)
     0x09, 0x89,                //   Usage (AL TV Viewer)
+    0x09, 0x8B,                //   Usage (Media Select DVD)
     0x09, 0x8D,                //   Usage (Program Guide)
+    0x09, 0x8F,                //   Usage (Games)
+    0x09, 0x93,                //   Usage (Media Select Tuner)
+    0x09, 0x94,                //   Usage (Exit)
+    0x09, 0x95,                //   Usage (Help)
+    0x09, 0x97,                //   Usage (Media Select Cable)
+    0x09, 0x98,                //   Usage (Media Select Satellite)
     0x09, 0x9A,                //   Usage (Data on Screen) [DVR]
     0x09, 0x9C,                //   Usage (Channel Increment)
     0x09, 0x9D,                //   Usage (Channel Decrement)
     // Media transport
     0x09, 0xB0,                //   Usage (Play)
+    0x09, 0xB1,                //   Usage (Pause)
     0x09, 0xB2,                //   Usage (Record)
     0x09, 0xB3,                //   Usage (Fast Forward)
     0x09, 0xB4,                //   Usage (Rewind)
@@ -334,15 +390,28 @@ const uint8_t our_report_descriptor_absolute[] = {
     0x09, 0xB6,                //   Usage (Scan Previous Track)
     0x09, 0xB7,                //   Usage (Stop)
     0x09, 0xB8,                //   Usage (Eject)
+    0x09, 0xB9,                //   Usage (Shuffle)
+    0x09, 0xBC,                //   Usage (Repeat)
+    0x09, 0xBF,                //   Usage (Slow)
+    0x09, 0xC0,                //   Usage (Frame Forward) [Step Forward]
+    0x09, 0xC1,                //   Usage (Frame Back) [Step Back]
     0x09, 0xCD,                //   Usage (Play/Pause)
     0x09, 0xCF,                //   Usage (Voice Command) [Google Assistant]
+    0x09, 0xD8,                //   Usage (Dictate)
+    0x09, 0xD9,                //   Usage (Emoji Picker)
     // Volume
     0x09, 0xE2,                //   Usage (Mute)
     0x09, 0xE9,                //   Usage (Volume Increment)
     0x09, 0xEA,                //   Usage (Volume Decrement)
     // 2-byte consumer usages
+    0x0A, 0x73, 0x01,         //   Usage (Audio Track)
+    0x0A, 0x93, 0x01,         //   Usage (AL Media Player)
     0x0A, 0x96, 0x01,         //   Usage (AL Internet Browser)
+    0x0A, 0x9C, 0x01,         //   Usage (AL Logoff) [Profile Switch]
+    0x0A, 0x9E, 0x01,         //   Usage (AL Lock/Screensaver) [Lock Screen]
+    0x0A, 0x9F, 0x01,         //   Usage (AL Control Panel) [Settings]
     0x0A, 0xA2, 0x01,         //   Usage (AL Task Manager) [App Switch]
+    0x0A, 0xB1, 0x01,         //   Usage (AL Screen Saver) [Ambient/Screensaver]
     0x0A, 0xCB, 0x01,         //   Usage (AL Assistant)
     0x0A, 0x21, 0x02,         //   Usage (AC Search)
     0x0A, 0x23, 0x02,         //   Usage (AC Home)
@@ -353,14 +422,19 @@ const uint8_t our_report_descriptor_absolute[] = {
     0x0A, 0x2D, 0x02,         //   Usage (AC Zoom In)
     0x0A, 0x2E, 0x02,         //   Usage (AC Zoom Out)
     0x0A, 0x32, 0x02,         //   Usage (AC Fullscreen)
+    0x0A, 0x33, 0x02,         //   Usage (AC Scroll Up)
+    0x0A, 0x34, 0x02,         //   Usage (AC Scroll Down)
+    0x0A, 0x9D, 0x02,         //   Usage (AC Language Switch)
+    0x0A, 0x9F, 0x02,         //   Usage (AC Recent Apps)
+    0x0A, 0xA2, 0x02,         //   Usage (AC All Apps)
     0x75, 0x01,                //   Report Size (1)
-    0x95, 0x2E,                //   Report Count (46)
+    0x95, 0x52,                //   Report Count (82)
     0x81, 0x02,                //   Input (Data,Var,Abs)
     0x05, 0x0B,                //   Usage Page (Telephony)
     0x09, 0x2F,                //   Usage (Phone Mute)
     0x95, 0x01,                //   Report Count (1)
     0x81, 0x02,                //   Input (Data,Var,Abs)
-    0x95, 0x01,                //   Report Count (1)
+    0x95, 0x05,                //   Report Count (5)
     0x81, 0x01,                //   Input (Const) - padding to byte boundary
     0xC0,                      // End Collection
 };

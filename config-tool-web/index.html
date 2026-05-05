@@ -33,36 +33,57 @@
             </div>
         </div>
 
-        <div id="quick_actions" class="mb-3 p-3 rounded">
-            <h6 class="mb-2">Quick Actions</h6>
-            <div class="row g-2">
-                <div class="col-auto">
-                    <button id="fix_ok_button" type="button" class="btn btn-success btn-sm">Fix OK Button</button>
-                </div>
-                <div class="col-auto">
-                    <button id="remap_voice_control" type="button" class="btn btn-warning btn-sm">Remap Voice Control</button>
-                </div>
-            </div>
-            <small class="text-muted d-block mt-1">Common fixes for Android TV remotes</small>
-        </div>
-
         <div id="error" class="alert alert-danger d-none"></div>
 
-        <div class="nav nav-tabs" id="nav-tab" role="tablist">
+        <div class="nav nav-tabs flex-nowrap" id="nav-tab" role="tablist">
             <button class="nav-link active" id="nav-mappings-tab" data-bs-toggle="tab" data-bs-target="#nav-mappings" type="button" role="tab">Mappings</button>
             <button class="nav-link" id="nav-settings-tab" data-bs-toggle="tab" data-bs-target="#nav-settings" type="button" role="tab">Settings</button>
             <button class="nav-link" id="nav-macros-tab" data-bs-toggle="tab" data-bs-target="#nav-macros" type="button" role="tab">Macros</button>
             <button class="nav-link" id="nav-expressions-tab" data-bs-toggle="tab" data-bs-target="#nav-expressions" type="button" role="tab">Expressions</button>
             <button class="nav-link" id="nav-actions-tab" data-bs-toggle="tab" data-bs-target="#nav-actions" type="button" role="tab">Actions</button>
             <button class="nav-link" id="nav-monitor-tab" data-bs-toggle="tab" data-bs-target="#nav-monitor" type="button" role="tab">Monitor</button>
-            <button class="nav-link" id="nav-examples-tab" data-bs-toggle="tab" data-bs-target="#nav-examples" type="button" role="tab">Examples</button>
+            <button class="nav-link" id="nav-examples-tab" data-bs-toggle="tab" data-bs-target="#nav-examples" type="button" role="tab">Quick Actions</button>
         </div>
 
         <div class="tab-content flex-grow-1">
 
             <div class="tab-pane active" id="nav-mappings" role="tabpanel" tabindex="0">
 
-                <div class="row pb-2 mt-3" style="overflow-x: auto;">
+                <div class="mt-3 mb-2">
+                    <a data-bs-toggle="collapse" href="#layer_help" role="button" class="text-muted small text-decoration-none">
+                        &#9432; How do Layers, Sticky, Tap &amp; Hold work? <span style="font-size: 0.8em;">&#9660;</span>
+                    </a>
+                    <div class="collapse" id="layer_help">
+                        <div class="card card-body mt-1 small" style="font-size: 0.82rem; line-height: 1.6;">
+                            <strong>What are Layers?</strong><br>
+                            Think of layers as <strong>profiles</strong> &mdash; each layer is a different set of key assignments. Only one layer is active at a time.<br>
+                            <strong>Layer 0</strong> is the default. You can switch to another layer by mapping a key to it.<br><br>
+
+                            <strong>Example: Power button switches between two profiles</strong><br>
+                            <div class="ps-2" style="border-left: 2px solid var(--accent); margin: 0.3rem 0;">
+                                <strong>Step 1.</strong> Map <code>Power</code> &rarr; <code>Layer 1</code>, check <strong>Sticky</strong>, on Layer 0.<br>
+                                <small class="text-muted">Press Power &rarr; switches to Layer 1. Press Power again &rarr; Sticky toggles back to Layer 0.</small><br>
+                                <strong>Step 2.</strong> Add your Layer 0 mappings (normal remote keys).<br>
+                                <strong>Step 3.</strong> Add your Layer 1 mappings (e.g. Volume Up &rarr; Brightness Up).<br>
+                                <small class="text-muted">Each mapping has layer checkboxes &mdash; check which layer(s) it should be active on.</small>
+                            </div><br>
+
+                            <strong>Sticky</strong> <span class="text-muted">(Layer targets only)</span><br>
+                            &bull; Toggle a layer on/off &mdash; press once to switch, press again to go back.<br>
+                            <small class="text-muted">Only useful when the output is a Layer. Has no effect on regular key mappings.</small><br><br>
+
+                            <strong>Tap &amp; Hold</strong> <span class="text-muted">(work with any mapping)</span><br>
+                            &bull; <strong>Tap</strong> &mdash; fires on quick press-and-release.<br>
+                            &bull; <strong>Hold</strong> &mdash; fires only when held down.<br>
+                            <div class="ps-2 mt-1" style="border-left: 2px solid var(--accent); margin-bottom: 0.3rem;">
+                                <strong>Tip:</strong> create two mappings for the same key &mdash; one with Tap, one with Hold &mdash; to give it dual function.<br>
+                                <small class="text-muted">Example: Tap Power &rarr; Mute, Hold Power &rarr; switch Layer.</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row pb-2 mt-1" style="overflow-x: auto;">
                     <div style="min-width: 720px; width: 100%;">
                         <div class="row my-2 align-items-end">
                             <div class="col-1"></div>
@@ -70,8 +91,8 @@
                             <div class="col-3 text-center"><a href="#" id="output-column-header" class="text-decoration-none text-reset d-block">Output</a></div>
                             <div class="col-3">
                                 <div class="d-flex align-items-end">
-                                    <div class="flex-fill text-center"><a href="#" id="layer-column-header" class="text-decoration-none text-reset d-block">Layer</a></div>
-                                    <div class="text-start pt-1" style="writing-mode: vertical-rl; transform: rotate(180deg); line-height: 1.2em;">Sticky<br>Tap<br>Hold</div>
+                                    <div class="flex-fill text-center"><a href="#" id="layer-column-header" class="text-decoration-none text-reset d-block" title="Layers let you have different key layouts. Layer 0 is the default. Use a mapping to switch layers (e.g. hold a button to activate Layer 1).">Layer <span style="font-size: 0.7em; opacity: 0.6;">&#9432;</span></a></div>
+                                    <div class="text-start pt-1" style="writing-mode: vertical-rl; transform: rotate(180deg); line-height: 1.2em;"><span title="Sticky: toggle a Layer on/off (only works with Layer targets)">Sticky</span><br><span title="Tap: fires on quick press-and-release (works with any mapping)">Tap</span><br><span title="Hold: fires only when held down (works with any mapping). Use Tap + Hold on the same key for dual function.">Hold</span></div>
                                 </div>
                             </div>
                             <div class="col-2 text-center">Scaling</div>
@@ -84,6 +105,7 @@
 
                 <div class="text-center mt-2 mb-3">
                     <button id="add_mapping" type="button" class="btn btn-primary">Add mapping</button>
+                    <button id="toggle_reorder" type="button" class="btn btn-outline-secondary btn-sm ms-2" title="Drag to reorder mappings">⋮⋮ Reorder</button>
                 </div>
 
             </div>
@@ -151,7 +173,7 @@
                         </div>
                     </div>
                 </div>
-                <div class="row mt-3">
+                <div class="row mt-3 d-none">
                     <div class="col-4 text-end">
                         <label for="gpio_debounce_time_input" class="col-form-label">GPIO debounce time</label>
                     </div>
@@ -173,7 +195,7 @@
                         </div>
                     </div>
                 </div>
-                <div class="row mt-3">
+                <div class="row mt-3 d-none">
                     <div class="col-4 text-end">
                         <label for="interval_override_dropdown" class="col-form-label">Override polling rate</label>
                     </div>
@@ -203,7 +225,7 @@
                         </select>
                     </div>
                 </div>
-                <div class="row mt-3">
+                <div class="row mt-3 d-none">
                     <div class="col-4 text-end">
                         <label for="input_labels_dropdown" class="col-form-label">Input labels</label>
                     </div>
@@ -214,7 +236,7 @@
                         </select>
                     </div>
                 </div>
-                <div class="row mt-3">
+                <div class="row mt-3 d-none">
                     <div class="col-4 text-end">
                         <label for="gpio_output_mode_dropdown" class="col-form-label">GPIO output mode</label>
                     </div>
@@ -225,7 +247,7 @@
                         </select>
                     </div>
                 </div>
-                <div class="row mt-3">
+                <div class="row mt-3 d-none">
                     <div class="col-4 text-end">
                         <label for="ignore_auth_dev_inputs_checkbox" class="col-form-label">Ignore auth device inputs</label>
                     </div>
@@ -233,7 +255,7 @@
                         <input type="checkbox" id="ignore_auth_dev_inputs_checkbox" class="form-check-input align-middle">
                     </div>
                 </div>
-                <div class="row mt-3">
+                <div class="row mt-3 d-none">
                     <div class="col-4 text-end">
                         <label for="normalize_gamepad_inputs_checkbox" class="col-form-label">Normalize gamepad inputs</label>
                     </div>
@@ -243,7 +265,6 @@
                 </div>
                 <div class="row mt-3">
                     <p><em>Changes to the emulated device type become active after disconnecting and reconnecting HID Remapper.</em></p>
-                    <p><em>Changes to gamepad input normalization are applied after re-plugging the device or HID Remapper.</em></p>
                 </div>
 
                 <h5 class="mt-4">Custom usages</h5>
@@ -336,7 +357,64 @@
 
             <div class="tab-pane" id="nav-examples" role="tabpanel" tabindex="0">
 
-                <ul id="examples" class="mt-4 list-group">
+                <div id="quick_actions" class="mt-4 p-3 rounded">
+                    <h6 class="mb-3">Common Fixes for Android TV Remotes</h6>
+                    <div class="mb-2">
+                        <button id="fix_ok_button" type="button" class="btn btn-success btn-sm">Fix OK Button</button>
+                        <small class="text-muted ms-2">Maps Enter &amp; Keypad Enter &rarr; DPAD Center</small>
+                    </div>
+                    <div class="mb-0">
+                        <button id="remap_voice_control" type="button" class="btn btn-warning btn-sm">Remap Voice Control</button>
+                        <small class="text-muted ms-2">Voice Command key &rarr; choose your own target</small>
+                    </div>
+                </div>
+
+                <div class="mt-4 p-3 rounded" style="border: 1px solid var(--border-color);">
+                    <h6 class="mb-3">Layer Switcher</h6>
+                    <small class="text-muted d-block mb-2">Select which layers to cycle through, then pick the key.</small>
+                    <div class="d-flex flex-wrap gap-3 mb-3">
+                        <div class="form-check">
+                            <input class="form-check-input layer_switcher_check" type="checkbox" value="0" id="ls_layer0" checked disabled>
+                            <label class="form-check-label" for="ls_layer0">Layer 0</label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input layer_switcher_check" type="checkbox" value="1" id="ls_layer1" checked>
+                            <label class="form-check-label" for="ls_layer1">Layer 1</label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input layer_switcher_check" type="checkbox" value="2" id="ls_layer2">
+                            <label class="form-check-label" for="ls_layer2">Layer 2</label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input layer_switcher_check" type="checkbox" value="3" id="ls_layer3">
+                            <label class="form-check-label" for="ls_layer3">Layer 3</label>
+                        </div>
+                    </div>
+                    <div class="d-flex align-items-center gap-2">
+                        <button id="create_layer_switcher" type="button" class="btn btn-primary btn-sm">Create &rarr; pick key</button>
+                        <small id="layer_switcher_hint" class="text-muted"></small>
+                    </div>
+                </div>
+
+                <div class="mt-4 p-3 rounded" style="border: 1px solid var(--border-color);">
+                    <h6 class="mb-3">Android TV Key Combos <small class="text-muted">(click to create Macro)</small></h6>
+                    <div class="small" style="line-height: 2;">
+                        <span class="badge bg-secondary combo_badge" role="button" data-keys="0x000700e3,0x00070011">Meta + N</span> <small class="text-muted">Notification shade</small> &nbsp;
+                        <span class="badge bg-secondary combo_badge" role="button" data-keys="0x000700e2,0x0007002b">Alt + Tab</span> <small class="text-muted">Recent apps</small> &nbsp;
+                        <span class="badge bg-secondary combo_badge" role="button" data-keys="0x000700e3,0x0007000f">Meta + L</span> <small class="text-muted">Lock screen</small> &nbsp;
+                        <span class="badge bg-secondary combo_badge" role="button" data-keys="0x000700e3,0x0007002a">Meta + Backspace</span> <small class="text-muted">Go back</small> &nbsp;
+                        <span class="badge bg-secondary combo_badge" role="button" data-keys="0x000700e3,0x00070028">Meta + Enter</span> <small class="text-muted">Home</small> &nbsp;
+                        <span class="badge bg-secondary combo_badge" role="button" data-keys="0x000700e3,0x0007000c">Meta + I</span> <small class="text-muted">Settings</small> &nbsp;
+                        <span class="badge bg-secondary combo_badge" role="button" data-keys="0x000700e3,0x00070004">Meta + A</span> <small class="text-muted">Google Assistant</small> &nbsp;
+                        <span class="badge bg-secondary combo_badge" role="button" data-keys="0x000700e3,0x0007002c">Meta + Space</span> <small class="text-muted">Search</small> &nbsp;
+                        <span class="badge bg-secondary combo_badge" role="button" data-keys="0x000700e3,0x00070005">Meta + B</span> <small class="text-muted">Browser</small> &nbsp;
+                        <span class="badge bg-secondary combo_badge" role="button" data-keys="0x000700e3,0x0007001c">Meta + Y</span> <small class="text-muted">YouTube</small>
+                    </div>
+                    <small class="text-muted d-block mt-2">Click a combo to auto-create a macro with those keys pressed together.</small>
+                </div>
+
+                <h6 class="text-muted mt-4 mb-2">Example Configs</h6>
+                <ul id="examples" class="list-group">
 
                 </ul>
 
@@ -352,6 +430,7 @@
 
     <template id="mapping_template">
         <div class="row mb-1 mapping_container">
+            <div class="col-auto drag_handle_col d-none" style="width: 28px; cursor: grab; display: flex; align-items: center; justify-content: center; font-size: 1.1rem; color: var(--text-muted); user-select: none;">⋮⋮</div>
             <div class="col-1"><button type="button" class="btn btn-primary delete_button">×</button></div>
             <div class="col-3">
                 <button type="button" class="btn btn-primary w-100 source_button position-relative">
@@ -431,11 +510,12 @@
 
     <template id="macro_template">
         <div class="accordion-item" id="macro_N">
-            <h2 class="accordion-header">
+            <h2 class="accordion-header position-relative">
                 <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapse_X">
                     <span class="macro_name flex-shrink-0">Macro N</span>
                     <span class="macro_preview text-muted px-3 flex-fill text-truncate"></span>
                 </button>
+                <button type="button" class="clone_macro_button btn btn-sm position-absolute" style="right: 3rem; top: 50%; transform: translateY(-50%); z-index: 2; padding: 0.1rem 0.4rem; font-size: 0.75rem;" title="Clone to next empty slot">Clone</button>
             </h2>
             <div id="collapse_X" class="accordion-collapse collapse" data-bs-parent="#macros_container">
                 <div class="accordion-body">
@@ -470,7 +550,7 @@
     <template id="expression_template">
         <div class="mb-3">
             <label class="form-label expression_label">Expression</label>
-            <textarea type="text" class="form-control expression_input font-monospace" rows="1" spellcheck="false"></textarea>
+            <textarea type="text" class="form-control expression_input font-monospace" rows="1" spellcheck="false" placeholder="e.g. 0x00010030 input_state 0.5 mul  |  usage opcode value ..."></textarea>
         </div>
     </template>
 
@@ -599,20 +679,55 @@
                             <input type="text" class="form-control usage_search_box" placeholder="Search">
                         </div>
                     </div>
+                    <div class="row mt-2 mb-1 align-items-center custom_hex_row">
+                        <div class="col-auto">
+                            <small class="text-muted">Custom code:</small>
+                        </div>
+                        <div class="col-auto">
+                            <div class="input-group input-group-sm">
+                                <span class="input-group-text">0x</span>
+                                <input type="text" class="form-control custom_hex_input font-monospace" placeholder="000c0041" style="max-width: 120px;">
+                            </div>
+                        </div>
+                        <div class="col-auto">
+                            <button type="button" class="btn btn-primary btn-sm apply_custom_hex">Apply</button>
+                        </div>
+                    </div>
                     <div class="col android_remote_usages mt-3">
-                        <h6 class="text-muted usage-category-header">Android Remote</h6>
+                        <h6 class="text-muted usage-category-header">📺 Android TV Remote</h6>
+                    </div>
+                    <div class="col samsung_tv_usages mt-3">
+                        <h6 class="text-muted usage-category-header">📡 Samsung Tizen TV</h6>
                     </div>
                     <div class="col media_usages mt-3">
-                        <h6 class="text-muted usage-category-header">Media</h6>
+                        <h6 class="text-muted usage-category-header">🎵 Media</h6>
                     </div>
                     <div class="col mouse_usages mt-3">
-                        <h6 class="text-muted usage-category-header">Mouse</h6>
+                        <h6 class="text-muted usage-category-header">🖱️ Mouse</h6>
                     </div>
                     <div class="col gamepad_usages mt-3">
-                        <h6 class="text-muted usage-category-header">Gamepad</h6>
+                        <h6 class="text-muted usage-category-header">🎮 Gamepad</h6>
                     </div>
                     <div class="col keyboard_usages mt-3">
-                        <h6 class="text-muted usage-category-header">Keyboard</h6>
+                        <h6 class="text-muted usage-category-header">⌨️ Keyboard</h6>
+                    </div>
+                    <div class="col expressions_usage mt-3">
+                        <h6 class="text-muted usage-category-header">fx Expressions</h6>
+                    </div>
+                    <div class="col registers_usage mt-3">
+                        <h6 class="text-muted usage-category-header">R Registers</h6>
+                    </div>
+                    <div class="col gpios_usage mt-3">
+                        <h6 class="text-muted usage-category-header">IO GPIO Pins</h6>
+                    </div>
+                    <div class="col layers_usage mt-3">
+                        <h6 class="text-muted usage-category-header">Layers</h6>
+                    </div>
+                    <div class="col macros_usage mt-3">
+                        <h6 class="text-muted usage-category-header">Macros</h6>
+                    </div>
+                    <div class="col analogs_usage mt-3">
+                        <h6 class="text-muted usage-category-header">~ Analog</h6>
                     </div>
                     <div class="col other_usages mt-3">
                         <h6 class="text-muted usage-category-header">Other</h6>
@@ -663,20 +778,55 @@
                             <input type="text" class="form-control usage_search_box" placeholder="Search">
                         </div>
                     </div>
+                    <div class="row mt-2 mb-1 align-items-center custom_hex_row">
+                        <div class="col-auto">
+                            <small class="text-muted">Custom code:</small>
+                        </div>
+                        <div class="col-auto">
+                            <div class="input-group input-group-sm">
+                                <span class="input-group-text">0x</span>
+                                <input type="text" class="form-control custom_hex_input font-monospace" placeholder="000c0041" style="max-width: 120px;">
+                            </div>
+                        </div>
+                        <div class="col-auto">
+                            <button type="button" class="btn btn-primary btn-sm apply_custom_hex">Apply</button>
+                        </div>
+                    </div>
                     <div class="col android_remote_usages mt-3">
-                        <h6 class="text-muted usage-category-header">Android Remote</h6>
+                        <h6 class="text-muted usage-category-header">📺 Android TV Remote</h6>
+                    </div>
+                    <div class="col samsung_tv_usages mt-3">
+                        <h6 class="text-muted usage-category-header">📡 Samsung Tizen TV</h6>
                     </div>
                     <div class="col media_usages mt-3">
-                        <h6 class="text-muted usage-category-header">Media</h6>
+                        <h6 class="text-muted usage-category-header">🎵 Media</h6>
                     </div>
                     <div class="col mouse_usages mt-3">
-                        <h6 class="text-muted usage-category-header">Mouse</h6>
+                        <h6 class="text-muted usage-category-header">🖱️ Mouse</h6>
                     </div>
                     <div class="col gamepad_usages mt-3">
-                        <h6 class="text-muted usage-category-header">Gamepad</h6>
+                        <h6 class="text-muted usage-category-header">🎮 Gamepad</h6>
                     </div>
                     <div class="col keyboard_usages mt-3">
-                        <h6 class="text-muted usage-category-header">Keyboard</h6>
+                        <h6 class="text-muted usage-category-header">⌨️ Keyboard</h6>
+                    </div>
+                    <div class="col layers_usage mt-3">
+                        <h6 class="text-muted usage-category-header">Layers</h6>
+                    </div>
+                    <div class="col macros_usage mt-3">
+                        <h6 class="text-muted usage-category-header">Macros</h6>
+                    </div>
+                    <div class="col expressions_usage mt-3">
+                        <h6 class="text-muted usage-category-header">fx Expressions</h6>
+                    </div>
+                    <div class="col registers_usage mt-3">
+                        <h6 class="text-muted usage-category-header">R Registers</h6>
+                    </div>
+                    <div class="col gpios_usage mt-3">
+                        <h6 class="text-muted usage-category-header">IO GPIO Pins</h6>
+                    </div>
+                    <div class="col analogs_usage mt-3">
+                        <h6 class="text-muted usage-category-header">~ Analog</h6>
                     </div>
                     <div class="col other_usages mt-3">
                         <h6 class="text-muted usage-category-header">Other</h6>
