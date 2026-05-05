@@ -148,6 +148,19 @@ table, .table {
   box-shadow: 0 0 8px rgba(74, 0, 224, 0.15);
 }
 
+/* Source/Target mapping buttons */
+.source_button, .target_button {
+  font-size: 0.72rem;
+  padding: 0.3rem 0.4rem;
+  line-height: 1.2;
+}
+.source_button .button_label, .target_button .button_label {
+  display: block;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
 /* Usage buttons in modals */
 .usage_button.btn-primary {
   background-color: var(--bg-primary);
@@ -159,6 +172,12 @@ table, .table {
 .usage_button.btn-primary:hover {
   background-color: var(--bg-hover);
   border-color: var(--accent);
+}
+.usage_button.usage_active {
+  background-color: var(--accent) !important;
+  border-color: var(--accent) !important;
+  color: #fff !important;
+  box-shadow: 0 0 0 3px rgba(74, 0, 224, 0.4);
 }
 
 /* Muted text */
@@ -256,13 +275,97 @@ a.text-reset:hover { color: var(--accent-hover) !important; }
   background: var(--text-muted);
 }
 
-/* Drag-and-drop reorder */
-.mapping_container.drag_over {
-  border-top: 2px solid var(--accent) !important;
+/* Back to top button */
+#back_to_top {
+  position: fixed;
+  bottom: 1.5rem;
+  right: 1.5rem;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  border: 1px solid var(--border-color);
+  background-color: var(--bg-surface);
+  color: var(--text-primary);
+  font-size: 1.2rem;
+  cursor: pointer;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.2s ease;
+  z-index: 1050;
 }
-.drag_handle_col {
-  cursor: grab;
+#back_to_top.visible {
+  opacity: 1;
+  pointer-events: auto;
 }
-.drag_handle_col:active {
-  cursor: grabbing;
+#back_to_top:hover {
+  background-color: var(--accent);
+  border-color: var(--accent);
+  color: #fff;
+}
+
+/* Clone & Delete buttons */
+.clone_mapping_btn, .delete_button {
+  width: 28px;
+  height: 28px;
+  padding: 0;
+  font-size: 0.9rem;
+  line-height: 1;
+  border-radius: 6px;
+}
+.clone_mapping_btn {
+  background-color: var(--bg-hover);
+  border: 1px solid var(--text-muted);
+  color: var(--text-primary);
+}
+.clone_mapping_btn:hover {
+  background-color: var(--accent);
+  border-color: var(--accent);
+  color: #fff;
+}
+.delete_button {
+  background-color: #2d1117;
+  border: 1px solid #f85149;
+  color: #f85149;
+}
+.delete_button:hover {
+  background-color: #5c2030;
+  color: #fff;
+}
+
+/* Reorder buttons */
+.move_up_btn, .move_down_btn {
+  background-color: var(--bg-hover);
+  border: 1px solid var(--text-muted);
+  border-radius: 4px;
+  color: var(--text-primary);
+  cursor: pointer;
+  width: 20px;
+  height: 14px;
+  font-size: 0.6rem;
+  line-height: 1;
+  padding: 0;
+}
+.move_up_btn:hover, .move_down_btn:hover {
+  background-color: var(--accent);
+  border-color: var(--accent);
+  color: #fff;
+}
+/* Mapping row zebra striping */
+.mapping_container {
+  padding: 0.4rem 0;
+  border-radius: 6px;
+  transition: transform 0.15s ease, opacity 0.15s ease, background-color 0.15s ease;
+}
+.mapping_container:nth-child(odd) {
+  background-color: var(--bg-surface);
+}
+.mapping_container:nth-child(even) {
+  background-color: var(--bg-hover);
+}
+.mapping_container.dragging {
+  opacity: 0.4;
+  transform: scale(0.97);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+  z-index: 10;
+  position: relative;
 }

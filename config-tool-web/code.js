@@ -235,7 +235,13 @@ document.addEventListener("DOMContentLoaded", function () {
     });
     update_layer_switcher_hint();
 
-    document.getElementById("toggle_reorder").addEventListener("click", toggle_reorder_mode);
+    document.getElementById("sort_by_input").addEventListener("click", sort_by_input);
+
+    const backToTop = document.getElementById('back_to_top');
+    backToTop.addEventListener('click', () => window.scrollTo({ top: 0, behavior: 'smooth' }));
+    window.addEventListener('scroll', () => {
+        backToTop.classList.toggle('visible', window.scrollY > 300);
+    });
 
     document.querySelectorAll('#our_descriptor_number_dropdown option').forEach(opt => {
         if (parseInt(opt.value) >= 2) opt.hidden = true;
@@ -801,6 +807,7 @@ function add_mapping(mapping) {
     const container = document.getElementById("mappings");
     const clone = template.content.cloneNode(true).firstElementChild;
     clone.querySelector(".delete_button").addEventListener("click", delete_mapping(mapping, clone));
+    clone.querySelector(".clone_mapping_btn").addEventListener("click", clone_mapping(mapping, clone));
     const sticky_checkbox = clone.querySelector(".sticky_checkbox");
     sticky_checkbox.checked = mapping['sticky'];
     sticky_checkbox.addEventListener("change", sticky_onclick(mapping, sticky_checkbox));
@@ -831,11 +838,7 @@ function add_mapping(mapping) {
     target_button.title = mapping['target_usage'];
     target_button.addEventListener("click", show_usage_modal(mapping, 'target', clone));
     set_port_badge(target_button, mapping['target_port']);
-    setup_drag(clone);
-    if (reorder_mode) {
-        clone.draggable = true;
-        clone.querySelector('.drag_handle_col').classList.remove('d-none');
-    }
+    setup_reorder(clone);
     container.appendChild(clone);
     set_forced_layers(mapping, clone);
     set_forced_flags(mapping, clone);
@@ -1052,6 +1055,18 @@ function delete_mapping(mapping, element) {
     };
 }
 
+function clone_mapping(mapping, element) {
+    return function () {
+        const new_mapping = JSON.parse(JSON.stringify(mapping));
+        const idx = config['mappings'].indexOf(mapping);
+        config['mappings'].splice(idx + 1, 0, new_mapping);
+        add_mapping(new_mapping);
+        const container = document.getElementById("mappings");
+        const added = container.lastElementChild;
+        element.after(added);
+    };
+}
+
 function sticky_onclick(mapping, element) {
     return function () {
         mapping['sticky'] = element.checked;
@@ -1192,7 +1207,32 @@ function show_usage_modal(mapping_, source_or_target, element_) {
             });
         }
         modal_element.setAttribute('data-usage-mode', source_or_target);
+        modal_element.querySelectorAll('.usage_button.usage_active').forEach(b => b.classList.remove('usage_active'));
+        const current_usage = source_or_target === 'macro_item'
+            ? modal_return_element.getAttribute('data-hid-usage')
+            : mapping_[source_or_target + '_usage'];
+        const hex_input = modal_element.querySelector('.custom_hex_input');
+        hex_input.value = '';
+        let should_scroll = false;
+        if (current_usage && current_usage !== '0x00000000') {
+            const active_btn = modal_element.querySelector('.usage_button[data-hid-usage="' + current_usage + '"]');
+            if (active_btn) {
+                active_btn.classList.add('usage_active');
+                should_scroll = true;
+            } else {
+                hex_input.value = current_usage.replace(/^0x/i, '');
+            }
+        }
         modal_.show();
+        if (should_scroll) {
+            modal_element.addEventListener('shown.bs.modal', function scrollOnce() {
+                modal_element.removeEventListener('shown.bs.modal', scrollOnce);
+                const btn = modal_element.querySelector('.usage_button.usage_active');
+                if (btn) {
+                    btn.scrollIntoView({ block: 'center', behavior: 'smooth' });
+                }
+            });
+        }
     };
 }
 
@@ -1339,7 +1379,7 @@ function update_layer_switcher_hint() {
     } else if (layers.length === 2) {
         hint.textContent = 'Toggle: Layer ' + layers[0] + ' ↔ Layer ' + layers[1] + ' (Sticky)';
     } else {
-        hint.textContent = 'Cycle: ' + layers.map(l => 'L' + l).join(' → ') + ' → L' + layers[0];
+        hint.textContent = 'Cycle: ' + layers.map(l => 'L' + l).join(' → ') + ' → L' + layers[0] + ' (Sticky)';
     }
 }
 
@@ -1379,14 +1419,14 @@ function finish_layer_switcher(source_usage) {
     pending_layer_switcher = null;
     if (!layers) return;
 
-    if (layers.length === 2) {
-        const from_layer = layers[0];
-        const to_layer = layers[1];
-        const target_usage = '0xfff1000' + to_layer;
+    for (let i = 0; i < layers.length; i++) {
+        const current = layers[i];
+        const next = layers[(i + 1) % layers.length];
+        const target_usage = '0xfff1000' + next;
         let mapping = {
             'source_usage': source_usage,
             'target_usage': target_usage,
-            'layers': [from_layer],
+            'layers': [current],
             'sticky': true,
             'tap': false, 'hold': false,
             'scaling': 1000,
@@ -1394,68 +1434,56 @@ function finish_layer_switcher(source_usage) {
         };
         config['mappings'].push(mapping);
         add_mapping(mapping);
-    } else {
-        for (let i = 0; i < layers.length; i++) {
-            const current = layers[i];
-            const next = layers[(i + 1) % layers.length];
-            const target_usage = '0xfff1000' + next;
-            let mapping = {
-                'source_usage': source_usage,
-                'target_usage': target_usage,
-                'layers': [current],
-                'sticky': false,
-                'tap': false, 'hold': false,
-                'scaling': 1000,
-                'source_port': 0, 'target_port': 0,
-            };
-            config['mappings'].push(mapping);
-            add_mapping(mapping);
-        }
     }
     switch_to_mappings_tab();
 }
 
-let reorder_mode = false;
 let drag_source_el = null;
+let drag_original_idx = -1;
 
-function toggle_reorder_mode() {
-    reorder_mode = !reorder_mode;
-    const btn = document.getElementById('toggle_reorder');
-    btn.classList.toggle('btn-outline-secondary', !reorder_mode);
-    btn.classList.toggle('btn-primary', reorder_mode);
-    document.querySelectorAll('#mappings .drag_handle_col').forEach(h => {
-        h.classList.toggle('d-none', !reorder_mode);
-    });
-    document.querySelectorAll('#mappings .mapping_container').forEach(row => {
-        row.draggable = reorder_mode;
-    });
+function move_mapping(clone, direction) {
+    const container = document.getElementById('mappings');
+    const rows = Array.from(container.children);
+    const idx = rows.indexOf(clone);
+    const newIdx = idx + direction;
+    if (newIdx < 0 || newIdx >= rows.length) return;
+    if (direction === -1) {
+        container.insertBefore(clone, rows[newIdx]);
+    } else {
+        container.insertBefore(clone, rows[newIdx].nextSibling);
+    }
+    const [moved] = config['mappings'].splice(idx, 1);
+    config['mappings'].splice(newIdx, 0, moved);
 }
 
-function setup_drag(clone) {
+function setup_reorder(clone) {
+    clone.querySelector('.move_up_btn').addEventListener('click', () => move_mapping(clone, -1));
+    clone.querySelector('.move_down_btn').addEventListener('click', () => move_mapping(clone, 1));
+    clone.draggable = true;
+
     clone.addEventListener('dragstart', function (e) {
-        if (!reorder_mode) { e.preventDefault(); return; }
         drag_source_el = clone;
-        clone.style.opacity = '0.4';
+        const container = document.getElementById('mappings');
+        drag_original_idx = Array.from(container.children).indexOf(clone);
+        clone.classList.add('dragging');
         e.dataTransfer.effectAllowed = 'move';
+        e.dataTransfer.setData('text/plain', '');
     });
     clone.addEventListener('dragend', function () {
-        clone.style.opacity = '1';
-        document.querySelectorAll('#mappings .mapping_container').forEach(r => r.classList.remove('drag_over'));
+        clone.classList.remove('dragging');
         drag_source_el = null;
+        const container = document.getElementById('mappings');
+        const new_idx = Array.from(container.children).indexOf(clone);
+        if (drag_original_idx !== -1 && drag_original_idx !== new_idx) {
+            const [moved] = config['mappings'].splice(drag_original_idx, 1);
+            config['mappings'].splice(new_idx, 0, moved);
+        }
+        drag_original_idx = -1;
     });
     clone.addEventListener('dragover', function (e) {
         if (!drag_source_el || drag_source_el === clone) return;
         e.preventDefault();
         e.dataTransfer.dropEffect = 'move';
-        clone.classList.add('drag_over');
-    });
-    clone.addEventListener('dragleave', function () {
-        clone.classList.remove('drag_over');
-    });
-    clone.addEventListener('drop', function (e) {
-        e.preventDefault();
-        if (!drag_source_el || drag_source_el === clone) return;
-        clone.classList.remove('drag_over');
         const container = document.getElementById('mappings');
         const rows = Array.from(container.children);
         const from_idx = rows.indexOf(drag_source_el);
@@ -1465,9 +1493,21 @@ function setup_drag(clone) {
         } else {
             container.insertBefore(drag_source_el, clone);
         }
-        const [moved] = config['mappings'].splice(from_idx, 1);
-        config['mappings'].splice(to_idx, 0, moved);
     });
+    clone.addEventListener('drop', function (e) {
+        e.preventDefault();
+    });
+}
+
+function sort_by_input() {
+    config['mappings'].sort((a, b) => {
+        if (a['source_usage'] < b['source_usage']) return -1;
+        if (a['source_usage'] > b['source_usage']) return 1;
+        const aLayer = Math.min(...(a['layers'].length ? a['layers'] : [99]));
+        const bLayer = Math.min(...(b['layers'].length ? b['layers'] : [99]));
+        return aLayer - bLayer;
+    });
+    set_mappings_ui_state();
 }
 
 function map_this_onclick(usage) {

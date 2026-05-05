@@ -86,7 +86,7 @@
                 <div class="row pb-2 mt-1" style="overflow-x: auto;">
                     <div style="min-width: 720px; width: 100%;">
                         <div class="row my-2 align-items-end">
-                            <div class="col-1"></div>
+                            <div class="col-2"></div>
                             <div class="col-3 text-center"><a href="#" id="input-column-header" class="text-decoration-none text-reset d-block">Input</a></div>
                             <div class="col-3 text-center"><a href="#" id="output-column-header" class="text-decoration-none text-reset d-block">Output</a></div>
                             <div class="col-3">
@@ -95,7 +95,7 @@
                                     <div class="text-start pt-1" style="writing-mode: vertical-rl; transform: rotate(180deg); line-height: 1.2em;"><span title="Sticky: toggle a Layer on/off (only works with Layer targets)">Sticky</span><br><span title="Tap: fires on quick press-and-release (works with any mapping)">Tap</span><br><span title="Hold: fires only when held down (works with any mapping). Use Tap + Hold on the same key for dual function.">Hold</span></div>
                                 </div>
                             </div>
-                            <div class="col-2 text-center">Scaling</div>
+                            <div class="col-1 text-center">Scaling</div>
                         </div>
 
                         <div id="mappings">
@@ -105,7 +105,7 @@
 
                 <div class="text-center mt-2 mb-3">
                     <button id="add_mapping" type="button" class="btn btn-primary">Add mapping</button>
-                    <button id="toggle_reorder" type="button" class="btn btn-outline-secondary btn-sm ms-2" title="Drag to reorder mappings">⋮⋮ Reorder</button>
+                    <button id="sort_by_input" type="button" class="btn btn-outline-secondary btn-sm ms-2" title="Group mappings with the same input together, sorted by layer">⇅ Group by Input</button>
                 </div>
 
             </div>
@@ -428,10 +428,18 @@
 
     </div>
 
+    <button id="back_to_top" type="button" title="Back to top">&#8679;</button>
+
     <template id="mapping_template">
         <div class="row mb-1 mapping_container">
-            <div class="col-auto drag_handle_col d-none" style="width: 28px; cursor: grab; display: flex; align-items: center; justify-content: center; font-size: 1.1rem; color: var(--text-muted); user-select: none;">⋮⋮</div>
-            <div class="col-1"><button type="button" class="btn btn-primary delete_button">×</button></div>
+            <div class="col-2 d-flex align-items-center justify-content-center gap-1">
+                <div class="d-flex flex-column">
+                    <button type="button" class="btn btn-sm move_up_btn p-0">&#9650;</button>
+                    <button type="button" class="btn btn-sm move_down_btn p-0">&#9660;</button>
+                </div>
+                <button type="button" class="btn clone_mapping_btn" title="Clone">⧉</button>
+                <button type="button" class="btn delete_button" title="Delete">×</button>
+            </div>
             <div class="col-3">
                 <button type="button" class="btn btn-primary w-100 source_button position-relative">
                     <span class="position-absolute top-50 start-0 translate-middle badge bg-info rounded-pill hub_port_badge">0</span>
@@ -496,7 +504,7 @@
                     </div>
                 </div>
             </div>
-            <div class="col-2"><input class="form-control scaling_input text-end" type="number"></div>
+            <div class="col-1"><input class="form-control scaling_input text-end p-1" type="number"></div>
         </div>
     </template>
 
