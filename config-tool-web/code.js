@@ -1823,6 +1823,33 @@ function load_example(n) {
     switch_to_mappings_tab();
 }
 
+function add_example(n) {
+    const ex = structuredClone(examples[n]['config']);
+    if (ex['mappings']) {
+        for (const m of ex['mappings']) {
+            config['mappings'].push(m);
+            add_mapping(m);
+        }
+    }
+    if (ex['expressions']) {
+        for (let i = 0; i < ex['expressions'].length && i < NEXPRESSIONS; i++) {
+            if (ex['expressions'][i] && !config['expressions'][i]) {
+                config['expressions'][i] = ex['expressions'][i];
+            }
+        }
+    }
+    if (ex['macros']) {
+        for (let i = 0; i < ex['macros'].length; i++) {
+            if (ex['macros'][i] && ex['macros'][i].length > 0 && config['macros'][i].length === 0) {
+                config['macros'][i] = ex['macros'][i];
+            }
+        }
+    }
+    set_ui_state();
+    validate_ui_expressions();
+    switch_to_mappings_tab();
+}
+
 function setup_examples() {
     const element = document.getElementById("examples");
     const template = document.getElementById("example_template");
@@ -1833,7 +1860,7 @@ function setup_examples() {
         'macros: double-click and "Hello, world!"',
         'tap-hold: middle button is middle-click when clicked, but switches layer when held',
         'invert scroll wheel direction',
-'moving the mouse scrolls when middle button held',
+        'moving the mouse scrolls when middle button held',
         'expressions: gamepad-to-mouse adapter',
         'expressions: middle button enables mouse jiggler',
         'expressions: auto-click left mouse button when cursor stops moving',
@@ -1842,9 +1869,9 @@ function setup_examples() {
     for (let i = 0; i < examples.length; i++) {
         if (!keep.has(examples[i]['description'])) continue;
         const clone = template.content.cloneNode(true).firstElementChild;
-        const link = clone.querySelector('a');
-        link.innerText = examples[i]['description'];
-        link.addEventListener("click", () => load_example(i));
+        clone.querySelector('.example_label').innerText = examples[i]['description'];
+        clone.querySelector('.example_add_btn').addEventListener("click", () => add_example(i));
+        clone.querySelector('.example_replace_btn').addEventListener("click", () => load_example(i));
         element.appendChild(clone);
     }
 }

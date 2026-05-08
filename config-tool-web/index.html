@@ -546,7 +546,11 @@
     </template>
 
     <template id="example_template">
-        <li class="list-group-item border border-0"><a class="text-muted" href="javascript:void(0);"></a></li>
+        <li class="list-group-item border border-0 d-flex align-items-center gap-2">
+            <span class="text-muted flex-fill example_label" style="font-size:0.85rem;"></span>
+            <button type="button" class="btn btn-success btn-sm example_add_btn" style="font-size:0.72rem;padding:0.15rem 0.5rem;">Add</button>
+            <button type="button" class="btn btn-outline-danger btn-sm example_replace_btn" style="font-size:0.72rem;padding:0.15rem 0.5rem;">Replace</button>
+        </li>
     </template>
 
     <template id="macro_template">
