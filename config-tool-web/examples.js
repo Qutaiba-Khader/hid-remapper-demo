@@ -100,6 +100,128 @@ const examples = [
         }
     },
     {
+        'description': 'mouse movement to scroll (natural)',
+        'config': {
+            "version": 6,
+            "unmapped_passthrough_layers": [0],
+            "partial_scroll_timeout": 1000000,
+            "interval_override": 0,
+            "tap_hold_threshold": 200000,
+            "gpio_debounce_time": 5,
+            "our_descriptor_number": 0,
+            "macro_entry_duration": 1,
+            "gpio_output_mode": 0,
+            "mappings": [
+                {
+                    "target_usage": "0x00010038",
+                    "source_usage": "0x00010031",
+                    "scaling": 10,
+                    "layers": [0],
+                    "sticky": false,
+                    "tap": false,
+                    "hold": false
+                },
+                {
+                    "target_usage": "0x000c0238",
+                    "source_usage": "0x00010030",
+                    "scaling": 10,
+                    "layers": [0],
+                    "sticky": false,
+                    "tap": false,
+                    "hold": false
+                },
+                {
+                    "target_usage": "0x00000000",
+                    "source_usage": "0x00010030",
+                    "scaling": 1000,
+                    "layers": [0],
+                    "sticky": false,
+                    "tap": false,
+                    "hold": false
+                },
+                {
+                    "target_usage": "0x00000000",
+                    "source_usage": "0x00010031",
+                    "scaling": 1000,
+                    "layers": [0],
+                    "sticky": false,
+                    "tap": false,
+                    "hold": false
+                }
+            ],
+            "macros": [
+                [], [], [], [], [], [], [], [],
+                [], [], [], [], [], [], [], [],
+                [], [], [], [], [], [], [], [],
+                [], [], [], [], [], [], [], []
+            ],
+            "expressions": [
+                "", "", "", "", "", "", "", ""
+            ]
+        }
+    },
+    {
+        'description': 'mouse movement to scroll (inverted)',
+        'config': {
+            "version": 6,
+            "unmapped_passthrough_layers": [0],
+            "partial_scroll_timeout": 1000000,
+            "interval_override": 0,
+            "tap_hold_threshold": 200000,
+            "gpio_debounce_time": 5,
+            "our_descriptor_number": 0,
+            "macro_entry_duration": 1,
+            "gpio_output_mode": 0,
+            "mappings": [
+                {
+                    "target_usage": "0x00010038",
+                    "source_usage": "0x00010031",
+                    "scaling": -10,
+                    "layers": [0],
+                    "sticky": false,
+                    "tap": false,
+                    "hold": false
+                },
+                {
+                    "target_usage": "0x000c0238",
+                    "source_usage": "0x00010030",
+                    "scaling": -10,
+                    "layers": [0],
+                    "sticky": false,
+                    "tap": false,
+                    "hold": false
+                },
+                {
+                    "target_usage": "0x00000000",
+                    "source_usage": "0x00010030",
+                    "scaling": 1000,
+                    "layers": [0],
+                    "sticky": false,
+                    "tap": false,
+                    "hold": false
+                },
+                {
+                    "target_usage": "0x00000000",
+                    "source_usage": "0x00010031",
+                    "scaling": 1000,
+                    "layers": [0],
+                    "sticky": false,
+                    "tap": false,
+                    "hold": false
+                }
+            ],
+            "macros": [
+                [], [], [], [], [], [], [], [],
+                [], [], [], [], [], [], [], [],
+                [], [], [], [], [], [], [], [],
+                [], [], [], [], [], [], [], []
+            ],
+            "expressions": [
+                "", "", "", "", "", "", "", ""
+            ]
+        }
+    },
+    {
         'description': 'moving the mouse scrolls when middle button held',
         'config': {
             "version": 3,
