@@ -1827,8 +1827,15 @@ function add_example(n) {
     const ex = structuredClone(examples[n]['config']);
     if (ex['mappings']) {
         for (const m of ex['mappings']) {
+            if ('layer' in m && !('layers' in m)) {
+                m['layers'] = [m['layer']];
+                delete m['layer'];
+            }
+            if (!('tap' in m)) m['tap'] = false;
+            if (!('hold' in m)) m['hold'] = false;
+            if (!('source_port' in m)) m['source_port'] = 0;
+            if (!('target_port' in m)) m['target_port'] = 0;
             config['mappings'].push(m);
-            add_mapping(m);
         }
     }
     if (ex['expressions']) {
@@ -1860,6 +1867,8 @@ function setup_examples() {
         'macros: double-click and "Hello, world!"',
         'tap-hold: middle button is middle-click when clicked, but switches layer when held',
         'invert scroll wheel direction',
+        'Voice Command toggles mouse-scroll mode',
+        'Voice Command toggles mouse-scroll mode (keep cursor)',
         'moving the mouse scrolls when middle button held',
         'expressions: gamepad-to-mouse adapter',
         'expressions: middle button enables mouse jiggler',
