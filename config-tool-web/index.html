@@ -331,6 +331,39 @@
                     </div>
                 </div>
 
+                <div class="accordion mt-4" id="firmware_download_accordion">
+                    <div class="accordion-item">
+                        <h2 class="accordion-header">
+                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#firmware_download_body">
+                                Download Firmware (.uf2)
+                            </button>
+                        </h2>
+                        <div id="firmware_download_body" class="accordion-collapse collapse" data-bs-parent="#firmware_download_accordion">
+                            <div class="accordion-body p-3">
+                                <div class="mb-3" style="font-size:0.8rem;color:var(--text-muted);">
+                                    Download the .uf2 file for your board, then use <strong>Flash firmware</strong> above to enter bootloader mode and copy the file to the drive that appears.
+                                </div>
+                                <div class="row g-3">
+                                    <div class="col-6">
+                                        <a href="https://github.com/Qutaiba-Khader/hid-remapper-demo/releases/latest/download/remapper.uf2" class="btn btn-primary w-100 py-3 d-flex flex-column align-items-center gap-1" id="fw_download_pico_w">
+                                            <span style="font-size:1.4rem;">&#127981;</span>
+                                            <strong>Pico W</strong>
+                                            <small class="text-muted" style="font-size:0.72rem;">RP2040 &mdash; remapper.uf2</small>
+                                        </a>
+                                    </div>
+                                    <div class="col-6">
+                                        <a href="https://github.com/Qutaiba-Khader/hid-remapper-demo/releases/latest/download/remapper_pico2.uf2" class="btn btn-primary w-100 py-3 d-flex flex-column align-items-center gap-1" id="fw_download_pico2">
+                                            <span style="font-size:1.4rem;">&#128640;</span>
+                                            <strong>Pico 2</strong>
+                                            <small class="text-muted" style="font-size:0.72rem;">RP2350 &mdash; remapper_pico2.uf2</small>
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
             </div>
 
             <div class="tab-pane" id="nav-monitor" role="tabpanel" tabindex="0">
