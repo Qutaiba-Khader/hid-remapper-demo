@@ -1876,6 +1876,12 @@ function setup_examples() {
         'disable windows keys',
         'macros: double-click and "Hello, world!"',
         'tap-hold: middle button is middle-click when clicked, but switches layer when held',
+        'invert scroll wheel direction',
+        'moving the mouse scrolls when middle button held',
+        'expressions: gamepad-to-mouse adapter',
+        'expressions: middle button enables mouse jiggler',
+        'expressions: auto-click left mouse button when cursor stops moving',
+        'mouse to analog stick',
     ]);
     for (let i = 0; i < examples.length; i++) {
         if (!keep.has(examples[i]['description'])) continue;
