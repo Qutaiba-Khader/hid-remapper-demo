@@ -223,6 +223,8 @@ document.addEventListener("DOMContentLoaded", function () {
 
     document.getElementById("fix_ok_button").addEventListener("click", fix_ok_button);
     document.getElementById("remap_voice_control").addEventListener("click", remap_voice_control);
+    document.getElementById("mouse_scroll_normal").addEventListener("click", () => add_mouse_scroll(false));
+    document.getElementById("mouse_scroll_inverted").addEventListener("click", () => add_mouse_scroll(true));
 
     document.querySelectorAll('.combo_badge').forEach(badge => {
         badge.addEventListener("click", () => create_macro_from_combo(badge));
@@ -1339,6 +1341,47 @@ function remap_voice_control() {
     if (lastMapping) {
         lastMapping.querySelector('.target_button').click();
     }
+}
+
+function add_mouse_scroll(inverted) {
+    let slot1 = -1;
+    let slot2 = -1;
+    for (let i = 0; i < NEXPRESSIONS; i++) {
+        if (!config['expressions'][i]) {
+            if (slot1 === -1) slot1 = i;
+            else if (slot2 === -1) { slot2 = i; break; }
+        }
+    }
+    if (slot1 === -1 || slot2 === -1) {
+        display_error("Need 2 empty expression slots. Free up expressions first.");
+        return;
+    }
+    const sign = inverted ? ' -1 mul' : '';
+    config['expressions'][slot1] = '0x00010031 input_state' + sign;
+    config['expressions'][slot2] = '0x00010030 input_state' + sign;
+
+    const expr1_usage = '0xfff3000' + (slot1 + 1);
+    const expr2_usage = '0xfff3000' + (slot2 + 1);
+
+    const mappings_to_add = [
+        { source: expr1_usage, target: '0x00010038' },
+        { source: expr2_usage, target: '0x000C0238' },
+    ];
+    for (const m of mappings_to_add) {
+        let mapping = {
+            'source_usage': m.source,
+            'target_usage': m.target,
+            'layers': [0],
+            'sticky': false, 'tap': false, 'hold': false,
+            'scaling': 1000,
+            'source_port': 0, 'target_port': 0,
+        };
+        config['mappings'].push(mapping);
+        add_mapping(mapping);
+    }
+    validate_ui_expressions();
+    set_expressions_ui_state();
+    switch_to_mappings_tab();
 }
 
 function create_macro_from_combo(badge) {
