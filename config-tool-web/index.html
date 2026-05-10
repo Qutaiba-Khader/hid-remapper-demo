@@ -14,7 +14,7 @@
 
 <body>
 
-    <div class="container d-flex flex-column" style="max-width: 720px; min-height: 100vh;">
+    <div class="container d-flex flex-column" style="max-width: 920px; min-height: 100vh;">
 
         <h1 class="mt-sm-5 mt-3">HID Remapper <small class="text-muted" style="font-size: 0.5em;">Android TV Remote Edition</small></h1>
 
@@ -84,7 +84,7 @@
                 </div>
 
                 <div class="row pb-2 mt-1" style="overflow-x: auto;">
-                    <div style="min-width: 720px; width: 100%;">
+                    <div style="min-width: 920px; width: 100%;">
                         <div class="row my-2 align-items-end">
                             <div class="col-2"></div>
                             <div class="col-3 text-center"><a href="#" id="input-column-header" class="text-decoration-none text-reset d-block">Input</a></div>
@@ -95,7 +95,7 @@
                                     <div class="text-start pt-1" style="writing-mode: vertical-rl; transform: rotate(180deg); line-height: 1.2em;"><span title="Sticky: toggle a Layer on/off (only works with Layer targets)">Sticky</span><br><span title="Tap: fires on quick press-and-release (works with any mapping)">Tap</span><br><span title="Hold: fires only when held down (works with any mapping). Use Tap + Hold on the same key for dual function.">Hold</span></div>
                                 </div>
                             </div>
-                            <div class="col-1 text-center">Scaling</div>
+                            <div class="col-1 text-center d-flex align-items-end justify-content-center gap-1"><span style="font-size:0.75rem;">Scale</span><span style="font-size:0.6rem;opacity:0.5;">|</span><span style="font-size:0.75rem;">Color</span></div>
                         </div>
 
                         <div id="mappings">
@@ -402,54 +402,72 @@
                     </div>
                 </div>
 
-                <div class="mt-4 p-3 rounded" style="border: 1px solid var(--border-color);">
-                    <h6 class="mb-3">Layer Switcher</h6>
-                    <small class="text-muted d-block mb-2">Select which layers to cycle through, then pick the key.</small>
-                    <div class="d-flex flex-wrap gap-3 mb-3">
-                        <div class="form-check">
-                            <input class="form-check-input layer_switcher_check" type="checkbox" value="0" id="ls_layer0" checked disabled>
-                            <label class="form-check-label" for="ls_layer0">Layer 0</label>
-                        </div>
-                        <div class="form-check">
-                            <input class="form-check-input layer_switcher_check" type="checkbox" value="1" id="ls_layer1" checked>
-                            <label class="form-check-label" for="ls_layer1">Layer 1</label>
-                        </div>
-                        <div class="form-check">
-                            <input class="form-check-input layer_switcher_check" type="checkbox" value="2" id="ls_layer2">
-                            <label class="form-check-label" for="ls_layer2">Layer 2</label>
-                        </div>
-                        <div class="form-check">
-                            <input class="form-check-input layer_switcher_check" type="checkbox" value="3" id="ls_layer3">
-                            <label class="form-check-label" for="ls_layer3">Layer 3</label>
-                        </div>
-                    </div>
-                    <div class="d-flex align-items-center gap-2">
-                        <button id="create_layer_switcher" type="button" class="btn btn-primary btn-sm">Create &rarr; pick key</button>
-                        <small id="layer_switcher_hint" class="text-muted"></small>
+                <div class="combo-section mt-4 p-3 rounded">
+                    <h6 class="mb-2">Android TV Key Combos</h6>
+                    <small class="text-muted d-block mb-3">Click to auto-create a macro with those keys pressed together.</small>
+                    <div class="combo-grid">
+                        <button class="combo-btn combo_badge" data-keys="0x000700e3,0x00070011"><span class="combo-keys">Meta + N</span><span class="combo-label">Notification shade</span></button>
+                        <button class="combo-btn combo_badge" data-keys="0x000700e2,0x0007002b"><span class="combo-keys">Alt + Tab</span><span class="combo-label">Recent apps</span></button>
+                        <button class="combo-btn combo_badge" data-keys="0x000700e3,0x0007000f"><span class="combo-keys">Meta + L</span><span class="combo-label">Lock screen</span></button>
+                        <button class="combo-btn combo_badge" data-keys="0x000700e3,0x0007002a"><span class="combo-keys">Meta + Bksp</span><span class="combo-label">Go back</span></button>
+                        <button class="combo-btn combo_badge" data-keys="0x000700e3,0x00070028"><span class="combo-keys">Meta + Enter</span><span class="combo-label">Home</span></button>
+                        <button class="combo-btn combo_badge" data-keys="0x000700e3,0x0007000c"><span class="combo-keys">Meta + I</span><span class="combo-label">Settings</span></button>
+                        <button class="combo-btn combo_badge" data-keys="0x000700e3,0x00070004"><span class="combo-keys">Meta + A</span><span class="combo-label">Google Assistant</span></button>
+                        <button class="combo-btn combo_badge" data-keys="0x000700e3,0x0007002c"><span class="combo-keys">Meta + Space</span><span class="combo-label">Search</span></button>
+                        <button class="combo-btn combo_badge" data-keys="0x000700e3,0x00070005"><span class="combo-keys">Meta + B</span><span class="combo-label">Browser</span></button>
+                        <button class="combo-btn combo_badge" data-keys="0x000700e3,0x0007001c"><span class="combo-keys">Meta + Y</span><span class="combo-label">YouTube</span></button>
                     </div>
                 </div>
 
-                <div class="mt-4 p-3 rounded" style="border: 1px solid var(--border-color);">
-                    <h6 class="mb-3">Android TV Key Combos <small class="text-muted">(click to create Macro)</small></h6>
-                    <div class="small" style="line-height: 2;">
-                        <span class="badge bg-secondary combo_badge" role="button" data-keys="0x000700e3,0x00070011">Meta + N</span> <small class="text-muted">Notification shade</small> &nbsp;
-                        <span class="badge bg-secondary combo_badge" role="button" data-keys="0x000700e2,0x0007002b">Alt + Tab</span> <small class="text-muted">Recent apps</small> &nbsp;
-                        <span class="badge bg-secondary combo_badge" role="button" data-keys="0x000700e3,0x0007000f">Meta + L</span> <small class="text-muted">Lock screen</small> &nbsp;
-                        <span class="badge bg-secondary combo_badge" role="button" data-keys="0x000700e3,0x0007002a">Meta + Backspace</span> <small class="text-muted">Go back</small> &nbsp;
-                        <span class="badge bg-secondary combo_badge" role="button" data-keys="0x000700e3,0x00070028">Meta + Enter</span> <small class="text-muted">Home</small> &nbsp;
-                        <span class="badge bg-secondary combo_badge" role="button" data-keys="0x000700e3,0x0007000c">Meta + I</span> <small class="text-muted">Settings</small> &nbsp;
-                        <span class="badge bg-secondary combo_badge" role="button" data-keys="0x000700e3,0x00070004">Meta + A</span> <small class="text-muted">Google Assistant</small> &nbsp;
-                        <span class="badge bg-secondary combo_badge" role="button" data-keys="0x000700e3,0x0007002c">Meta + Space</span> <small class="text-muted">Search</small> &nbsp;
-                        <span class="badge bg-secondary combo_badge" role="button" data-keys="0x000700e3,0x00070005">Meta + B</span> <small class="text-muted">Browser</small> &nbsp;
-                        <span class="badge bg-secondary combo_badge" role="button" data-keys="0x000700e3,0x0007001c">Meta + Y</span> <small class="text-muted">YouTube</small>
+                <div class="combo-section mt-4 p-3 rounded">
+                    <h6 class="mb-2">Browser Shortcuts</h6>
+                    <small class="text-muted d-block mb-3">Click to auto-create a macro with those keys pressed together.</small>
+                    <div class="combo-grid">
+                        <button class="combo-btn combo_badge" data-keys="0x000700e0,0x0007002b"><span class="combo-keys">Ctrl + Tab</span><span class="combo-label">Next tab</span></button>
+                        <button class="combo-btn combo_badge" data-keys="0x000700e0,0x000700e1,0x0007002b"><span class="combo-keys">Ctrl+Shift+Tab</span><span class="combo-label">Previous tab</span></button>
+                        <button class="combo-btn combo_badge" data-keys="0x000700e0,0x0007001a"><span class="combo-keys">Ctrl + W</span><span class="combo-label">Close tab</span></button>
+                        <button class="combo-btn combo_badge" data-keys="0x000700e0,0x00070017"><span class="combo-keys">Ctrl + T</span><span class="combo-label">New tab</span></button>
+                        <button class="combo-btn combo_badge" data-keys="0x000700e0,0x000700e1,0x00070017"><span class="combo-keys">Ctrl+Shift+T</span><span class="combo-label">Reopen closed</span></button>
+                        <button class="combo-btn combo_badge" data-keys="0x000700e0,0x0007000f"><span class="combo-keys">Ctrl + L</span><span class="combo-label">Address bar</span></button>
+                        <button class="combo-btn combo_badge" data-keys="0x000700e0,0x00070015"><span class="combo-keys">Ctrl + R</span><span class="combo-label">Refresh</span></button>
+                        <button class="combo-btn combo_badge" data-keys="0x000700e0,0x000700e1,0x00070015"><span class="combo-keys">Ctrl+Shift+R</span><span class="combo-label">Hard refresh</span></button>
+                        <button class="combo-btn combo_badge" data-keys="0x000700e0,0x00070007"><span class="combo-keys">Ctrl + D</span><span class="combo-label">Bookmark</span></button>
+                        <button class="combo-btn combo_badge" data-keys="0x000700e0,0x00070009"><span class="combo-keys">Ctrl + F</span><span class="combo-label">Find</span></button>
+                        <button class="combo-btn combo_badge" data-keys="0x000700e0,0x0007000b"><span class="combo-keys">Ctrl + H</span><span class="combo-label">History</span></button>
+                        <button class="combo-btn combo_badge" data-keys="0x000700e0,0x0007000d"><span class="combo-keys">Ctrl + J</span><span class="combo-label">Downloads</span></button>
+                        <button class="combo-btn combo_badge" data-keys="0x000700e0,0x00070011"><span class="combo-keys">Ctrl + N</span><span class="combo-label">New window</span></button>
+                        <button class="combo-btn combo_badge" data-keys="0x000700e0,0x000700e1,0x00070011"><span class="combo-keys">Ctrl+Shift+N</span><span class="combo-label">Incognito</span></button>
+                        <button class="combo-btn combo_badge" data-keys="0x000700e2,0x00070050"><span class="combo-keys">Alt + Left</span><span class="combo-label">Back</span></button>
+                        <button class="combo-btn combo_badge" data-keys="0x000700e2,0x0007004f"><span class="combo-keys">Alt + Right</span><span class="combo-label">Forward</span></button>
+                        <button class="combo-btn combo_badge" data-keys="0x00070044"><span class="combo-keys">F11</span><span class="combo-label">Fullscreen</span></button>
+                        <button class="combo-btn combo_badge" data-keys="0x000700e0,0x0007002e"><span class="combo-keys">Ctrl + =</span><span class="combo-label">Zoom in</span></button>
+                        <button class="combo-btn combo_badge" data-keys="0x000700e0,0x0007002d"><span class="combo-keys">Ctrl + -</span><span class="combo-label">Zoom out</span></button>
+                        <button class="combo-btn combo_badge" data-keys="0x000700e0,0x00070027"><span class="combo-keys">Ctrl + 0</span><span class="combo-label">Reset zoom</span></button>
                     </div>
-                    <small class="text-muted d-block mt-2">Click a combo to auto-create a macro with those keys pressed together.</small>
                 </div>
 
-                <h6 class="text-muted mt-4 mb-2">Example Configs</h6>
-                <ul id="examples" class="list-group">
+                <div class="combo-section mt-4 p-3 rounded">
+                    <h6 class="mb-2">Windows Shortcuts</h6>
+                    <small class="text-muted d-block mb-3">Click to auto-create a macro with those keys pressed together.</small>
+                    <div class="combo-grid">
+                        <button class="combo-btn combo_badge" data-keys="0x000700e2,0x0007002b"><span class="combo-keys">Alt + Tab</span><span class="combo-label">Next app</span></button>
+                        <button class="combo-btn combo_badge" data-keys="0x000700e2,0x000700e1,0x0007002b"><span class="combo-keys">Alt+Shift+Tab</span><span class="combo-label">Previous app</span></button>
+                        <button class="combo-btn combo_badge" data-keys="0x000700e3,0x0007002b"><span class="combo-keys">Win + Tab</span><span class="combo-label">Task View</span></button>
+                        <button class="combo-btn combo_badge" data-keys="0x000700e2,0x0007003d"><span class="combo-keys">Alt + F4</span><span class="combo-label">Close window</span></button>
+                        <button class="combo-btn combo_badge" data-keys="0x000700e3,0x00070007"><span class="combo-keys">Win + D</span><span class="combo-label">Show Desktop</span></button>
+                        <button class="combo-btn combo_badge" data-keys="0x000700e3,0x00070008"><span class="combo-keys">Win + E</span><span class="combo-label">File Explorer</span></button>
+                        <button class="combo-btn combo_badge" data-keys="0x000700e3,0x0007000f"><span class="combo-keys">Win + L</span><span class="combo-label">Lock PC</span></button>
+                        <button class="combo-btn combo_badge" data-keys="0x000700e3,0x00070019"><span class="combo-keys">Win + V</span><span class="combo-label">Clipboard history</span></button>
+                        <button class="combo-btn combo_badge" data-keys="0x000700e0,0x000700e1,0x00070029"><span class="combo-keys">Ctrl+Shift+Esc</span><span class="combo-label">Task Manager</span></button>
+                        <button class="combo-btn combo_badge" data-keys="0x000700e3,0x000700e1,0x00070016"><span class="combo-keys">Win+Shift+S</span><span class="combo-label">Screenshot</span></button>
+                    </div>
+                </div>
 
-                </ul>
+                <div class="combo-section mt-4 p-3 rounded">
+                    <h6 class="mb-2">Example Configs</h6>
+                    <small class="text-muted d-block mb-3">Click to add a preset config to your current mappings.</small>
+                    <div id="examples"></div>
+                </div>
 
             </div>
 
@@ -537,7 +555,10 @@
                     </div>
                 </div>
             </div>
-            <div class="col-1"><input class="form-control scaling_input text-center p-0" type="number" step="0.01" style="font-size:0.8rem;min-width:45px;"></div>
+            <div class="col-1 d-flex align-items-center gap-0" style="overflow:visible;">
+                <input class="form-control scaling_input text-center p-0" type="number" step="0.01" style="font-size:0.8rem;min-width:40px;max-width:50px;">
+                <input type="color" class="color_input" value="#6c757d" title="Row color (double-click to reset)">
+            </div>
         </div>
     </template>
 
@@ -545,13 +566,6 @@
         <button type="button" class="btn btn-primary usage_button m-1"></button>
     </template>
 
-    <template id="example_template">
-        <li class="list-group-item border border-0 d-flex align-items-center gap-2">
-            <span class="text-muted flex-fill example_label" style="font-size:0.85rem;"></span>
-            <button type="button" class="btn btn-success btn-sm example_add_btn" style="font-size:0.72rem;padding:0.15rem 0.5rem;">Add</button>
-            <button type="button" class="btn btn-outline-danger btn-sm example_replace_btn" style="font-size:0.72rem;padding:0.15rem 0.5rem;">Replace</button>
-        </li>
-    </template>
 
     <template id="macro_template">
         <div class="accordion-item" id="macro_N">
@@ -593,9 +607,26 @@
     </template>
 
     <template id="expression_template">
-        <div class="mb-3">
-            <label class="form-label expression_label">Expression</label>
-            <textarea type="text" class="form-control expression_input font-monospace" rows="1" spellcheck="false" placeholder="e.g. 0x00010030 input_state 0.5 mul  |  usage opcode value ..."></textarea>
+        <div class="mb-3 expr-block">
+            <div class="d-flex align-items-center justify-content-between mb-1">
+                <label class="form-label expression_label mb-0">Expression</label>
+                <div class="d-flex align-items-center gap-2">
+                    <select class="expr-snippet-select">
+                        <option value="" disabled selected>Snippets</option>
+                        <option value="0x000700__ input_state_binary">When button held → output 1/0</option>
+                        <option value="0x000700__ input_state_binary 0x000700__ input_state_binary mul">When A AND B pressed</option>
+                        <option value="0x00010030 input_state 0.5 mul">Scale mouse X by 0.5</option>
+                        <option value="0x00010031 input_state -1 mul">Invert mouse Y</option>
+                        <option value="0x000700__ input_state_binary auto_repeat">Auto-repeat when held</option>
+                        <option value="0x000700__ prev_input_state_binary not 0x000700__ input_state_binary mul 1 recall add 2 mod dup 1 store">Toggle on/off with button</option>
+                    </select>
+                    <span class="expr-sep"></span>
+                    <button type="button" class="expr-action-btn expr-copy-btn" title="Copy">Copy</button>
+                    <button type="button" class="expr-action-btn expr-paste-btn" title="Paste">Paste</button>
+                    <button type="button" class="expr-edit-btn">Edit</button>
+                </div>
+            </div>
+            <textarea type="text" class="form-control expression_input font-monospace" rows="3" spellcheck="false" placeholder="e.g. 0x00010030 input_state 0.5 mul  |  usage opcode value ..."></textarea>
         </div>
     </template>
 
@@ -881,6 +912,10 @@
                 </div>
             </div>
         </div>
+    </div>
+
+    <div id="color_palette" class="color-palette d-none">
+        <div id="color_palette_dots" class="d-flex gap-1"></div>
     </div>
 
     <input type="file" class="d-none" id="file_input">

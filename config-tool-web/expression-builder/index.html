@@ -1,0 +1,480 @@
+<!doctype html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Expression Builder - HID Remapper</title>
+    <style>
+        :root {
+            --bg-primary: #1a1a2e;
+            --bg-surface: #16213e;
+            --bg-hover: #1e2a4a;
+            --accent: #4a00e0;
+            --accent-hover: #5c16f0;
+            --text-primary: #e0e0e0;
+            --text-muted: #8892b0;
+            --border-color: #2d2d44;
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            background-color: var(--bg-primary);
+            color: var(--text-primary);
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+            overflow: hidden;
+        }
+        .toolbar {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0.5rem 1rem;
+            background-color: var(--bg-surface);
+            border-bottom: 1px solid var(--border-color);
+            flex-shrink: 0;
+        }
+        .toolbar-left {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+        .toolbar h1 {
+            font-size: 0.95rem;
+            font-weight: 700;
+            color: var(--text-primary);
+        }
+        .toolbar h1 small {
+            font-size: 0.65rem;
+            font-weight: 400;
+            color: var(--text-muted);
+        }
+        .toolbar-actions {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        .btn {
+            font-size: 0.72rem;
+            font-weight: 600;
+            padding: 0.35rem 0.75rem;
+            border-radius: 0.4rem;
+            border: 1px solid var(--border-color);
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            cursor: pointer;
+            transition: all 0.15s ease;
+        }
+        .btn:hover {
+            background-color: var(--bg-hover);
+            border-color: var(--accent);
+        }
+        .btn-accent {
+            background-color: var(--accent);
+            border-color: var(--accent);
+            color: #fff;
+        }
+        .btn-accent:hover {
+            background-color: var(--accent-hover);
+            border-color: var(--accent-hover);
+        }
+        .btn-done {
+            background-color: #059669;
+            border-color: #059669;
+            color: #fff;
+            font-size: 0.75rem;
+            padding: 0.4rem 1rem;
+        }
+        .btn-done:hover {
+            background-color: #047857;
+            border-color: #047857;
+        }
+        .template-select {
+            font-size: 0.72rem;
+            font-weight: 600;
+            padding: 0.35rem 0.6rem;
+            border-radius: 0.4rem;
+            border: 1px solid var(--accent);
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            cursor: pointer;
+            appearance: auto;
+        }
+        .template-select:hover {
+            border-color: var(--accent-hover);
+        }
+        .toolbar-sep {
+            width: 1px;
+            height: 20px;
+            background-color: var(--border-color);
+        }
+        .main {
+            display: flex;
+            flex: 1;
+            overflow: hidden;
+        }
+        .workspace-wrap {
+            flex: 1;
+            position: relative;
+        }
+        #blocklyDiv {
+            width: 100%;
+            height: 100%;
+        }
+        .output-panel {
+            width: 280px;
+            display: flex;
+            flex-direction: column;
+            border-left: 1px solid var(--border-color);
+            background-color: var(--bg-surface);
+            flex-shrink: 0;
+        }
+        .output-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0.5rem 0.75rem;
+            border-bottom: 1px solid var(--border-color);
+        }
+        .output-header span {
+            font-size: 0.75rem;
+            font-weight: 600;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+        #code {
+            flex: 1;
+            width: 100%;
+            background-color: var(--bg-primary);
+            color: #a78bfa;
+            border: none;
+            padding: 0.75rem;
+            font-family: 'Consolas', 'Monaco', monospace;
+            font-size: 0.8rem;
+            line-height: 1.6;
+            resize: none;
+            outline: none;
+        }
+        .credit {
+            padding: 0.35rem 0.75rem;
+            font-size: 0.6rem;
+            color: var(--text-muted);
+            border-top: 1px solid var(--border-color);
+            text-align: center;
+            opacity: 0.7;
+        }
+        .credit a { color: var(--text-muted); }
+        .injectionDiv { border: none !important; }
+        input[type="file"] { display: none; }
+
+        .current-expr-bar {
+            display: none;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.4rem 1rem;
+            background: linear-gradient(90deg, #1e1e35 0%, var(--bg-primary) 100%);
+            border-bottom: 1px solid var(--border-color);
+            flex-shrink: 0;
+        }
+        .current-expr-bar.visible { display: flex; }
+        .current-expr-bar .label {
+            font-size: 0.68rem;
+            font-weight: 700;
+            color: var(--accent);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            white-space: nowrap;
+        }
+        .current-expr-bar code {
+            font-size: 0.72rem;
+            color: #f59e0b;
+            font-family: 'Consolas', 'Monaco', monospace;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            flex: 1;
+        }
+
+        .confirm-overlay {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.65);
+            z-index: 9999;
+            align-items: center;
+            justify-content: center;
+        }
+        .confirm-overlay.visible { display: flex; }
+        .confirm-box {
+            background: var(--bg-surface);
+            border: 1px solid var(--border-color);
+            border-radius: 0.75rem;
+            padding: 1.75rem;
+            max-width: 400px;
+            width: 90%;
+            text-align: center;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+        }
+        .confirm-box h3 {
+            font-size: 1rem;
+            margin-bottom: 0.5rem;
+            color: var(--text-primary);
+        }
+        .confirm-box p {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            margin-bottom: 1.25rem;
+            line-height: 1.4;
+        }
+        .confirm-box .confirm-actions {
+            display: flex;
+            gap: 0.6rem;
+            justify-content: center;
+        }
+
+        .empty-hint {
+            display: none;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            text-align: center;
+            color: var(--text-muted);
+            pointer-events: none;
+            z-index: 5;
+            padding: 2rem;
+        }
+        .empty-hint.visible { display: block; }
+        .empty-hint h2 {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 0.6rem;
+        }
+        .empty-hint p {
+            font-size: 0.82rem;
+            line-height: 1.6;
+            max-width: 320px;
+            margin: 0 auto;
+        }
+        .empty-hint .hint-steps {
+            margin-top: 1rem;
+            text-align: left;
+            display: inline-block;
+        }
+        .empty-hint .hint-steps li {
+            font-size: 0.78rem;
+            margin-bottom: 0.4rem;
+            list-style: none;
+            padding-left: 1.2em;
+            position: relative;
+        }
+        .empty-hint .hint-steps li::before {
+            content: attr(data-step);
+            position: absolute;
+            left: 0;
+            color: var(--accent);
+            font-weight: 700;
+        }
+
+        .blocklyToolboxDiv {
+            background-color: #16213e !important;
+        }
+        .blocklyTreeRow {
+            padding: 4px 12px !important;
+        }
+        .blocklyTreeLabel {
+            color: #e0e0e0 !important;
+            font-size: 13px !important;
+            font-weight: 500 !important;
+        }
+        .blocklyFlyoutBackground {
+            fill: #1e2a4a !important;
+        }
+        .blocklyFlyoutLabelText {
+            fill: #8892b0 !important;
+            font-size: 12px !important;
+        }
+    </style>
+    <script src="blockly/blockly_compressed.js"></script>
+    <script src="blockly/msg/en.js"></script>
+</head>
+<body>
+    <div class="toolbar">
+        <div class="toolbar-left">
+            <h1>Expression Builder <small>HID Remapper</small></h1>
+        </div>
+        <div class="toolbar-actions">
+            <select id="template_select" class="template-select" title="Load a starter template">
+                <option value="" disabled selected>Templates...</option>
+                <option value="button_hold">When Button Held</option>
+                <option value="scale_mouse">Scale Mouse Speed</option>
+                <option value="invert_axis">Invert Mouse Y</option>
+                <option value="if_then_else">If Button -> Value</option>
+                <option value="clamp_value">Clamp to Range</option>
+                <option value="two_keys_and">Two Keys Combo (AND)</option>
+                <option value="compare_threshold">Axis Above Threshold</option>
+            </select>
+            <span class="toolbar-sep"></span>
+            <button id="save_button" class="btn" title="Save workspace to file">Save</button>
+            <button id="load_button" class="btn" title="Load workspace from file">Load</button>
+            <input type="file" id="file_input" accept=".json">
+            <span class="toolbar-sep"></span>
+            <button id="done_btn" class="btn-done" title="Copy result and close">Done</button>
+        </div>
+    </div>
+
+    <div id="expr_bar" class="current-expr-bar">
+        <span class="label">Editing:</span>
+        <code id="expr_bar_text"></code>
+    </div>
+
+    <div class="main">
+        <div class="workspace-wrap">
+            <div id="blocklyDiv"></div>
+            <div id="empty_hint" class="empty-hint visible">
+                <h2>Build your expression visually</h2>
+                <p>Create complex HID remapper expressions by snapping blocks together.</p>
+                <ul class="hint-steps">
+                    <li data-step="1.">Click a <strong>category</strong> on the left to see available blocks</li>
+                    <li data-step="2.">Drag blocks onto the canvas and connect them</li>
+                    <li data-step="3.">Or pick a <strong>Template</strong> above to start with a preset</li>
+                </ul>
+            </div>
+        </div>
+        <div class="output-panel">
+            <div class="output-header">
+                <span>Generated Expression</span>
+                <button id="copy_btn" class="btn btn-accent">Copy</button>
+            </div>
+            <textarea id="code" readonly placeholder="Drag blocks to build your expression..."></textarea>
+            <div class="credit">
+                Expression system by <a href="https://github.com/jfedor2/hid-remapper" target="_blank">Jacek Fedorynski</a> (MIT)
+            </div>
+        </div>
+    </div>
+
+    <div id="confirm_overlay" class="confirm-overlay">
+        <div class="confirm-box">
+            <h3>Leave Expression Builder?</h3>
+            <p>Make sure to copy the generated expression before leaving, or your work will be lost.</p>
+            <div class="confirm-actions">
+                <button id="confirm_copy_close" class="btn btn-accent">Copy & Close</button>
+                <button id="confirm_discard" class="btn">Leave without copying</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="code.js"></script>
+    <script>
+        // === Copy button ===
+        document.getElementById('copy_btn').addEventListener('click', function() {
+            const code = document.getElementById('code').value;
+            navigator.clipboard.writeText(code);
+            this.textContent = 'Copied!';
+            setTimeout(() => { this.textContent = 'Copy'; }, 1200);
+        });
+
+        // === URL params - load expression into workspace ===
+        const params = new URLSearchParams(window.location.search);
+        const exprIdx = params.get('idx');
+        const exprVal = params.get('expr');
+        if (exprIdx !== null) {
+            const bar = document.getElementById('expr_bar');
+            const barText = document.getElementById('expr_bar_text');
+            bar.classList.add('visible');
+            if (exprVal && exprVal.trim()) {
+                const parsed = parseExpressionToWorkspace(exprVal);
+                barText.textContent = parsed
+                    ? 'Expression #' + exprIdx
+                    : 'Expression #' + exprIdx + '  (could not parse into blocks)';
+                if (!parsed) {
+                    barText.textContent += '  |  ' + exprVal;
+                }
+                if (parsed) {
+                    document.getElementById('empty_hint').classList.remove('visible');
+                }
+            } else {
+                barText.textContent = 'Expression #' + exprIdx + ' (empty - build a new one)';
+            }
+            hasChanges = false;
+        }
+
+        // === Template select ===
+        document.getElementById('template_select').addEventListener('change', function() {
+            if (!this.value) return;
+            const key = this.value;
+            this.selectedIndex = 0;
+            if (typeof loadTemplate === 'function') {
+                loadTemplate(key);
+            }
+        });
+
+        // === Empty state hint ===
+        function updateEmptyHint() {
+            const hint = document.getElementById('empty_hint');
+            const blocks = workspace.getAllBlocks(false);
+            if (blocks.length > 0) {
+                hint.classList.remove('visible');
+            } else {
+                hint.classList.add('visible');
+            }
+        }
+        workspace.addChangeListener(function(e) {
+            if (e.type === Blockly.Events.BLOCK_CREATE || e.type === Blockly.Events.BLOCK_DELETE) {
+                updateEmptyHint();
+            }
+        });
+
+        // === Track changes for close confirmation ===
+        let hasChanges = false;
+        workspace.addChangeListener(function(e) {
+            if (e.type === Blockly.Events.BLOCK_CREATE || e.type === Blockly.Events.BLOCK_CHANGE ||
+                e.type === Blockly.Events.BLOCK_MOVE || e.type === Blockly.Events.BLOCK_DELETE) {
+                hasChanges = true;
+            }
+        });
+
+        window.addEventListener('beforeunload', function(e) {
+            if (hasChanges) {
+                e.preventDefault();
+                e.returnValue = '';
+            }
+        });
+
+        // === Done button - shows confirm dialog ===
+        document.getElementById('done_btn').addEventListener('click', function() {
+            const code = document.getElementById('code').value;
+            if (!hasChanges || !code.trim()) {
+                window.close();
+                return;
+            }
+            document.getElementById('confirm_overlay').classList.add('visible');
+        });
+
+        // === Confirm dialog buttons ===
+        document.getElementById('confirm_copy_close').addEventListener('click', function() {
+            const code = document.getElementById('code').value;
+            navigator.clipboard.writeText(code).then(function() {
+                hasChanges = false;
+                document.getElementById('confirm_overlay').classList.remove('visible');
+                window.close();
+            });
+        });
+
+        document.getElementById('confirm_discard').addEventListener('click', function() {
+            hasChanges = false;
+            document.getElementById('confirm_overlay').classList.remove('visible');
+            window.close();
+        });
+
+        // Close overlay on click outside box
+        document.getElementById('confirm_overlay').addEventListener('click', function(e) {
+            if (e.target === this) {
+                this.classList.remove('visible');
+            }
+        });
+    </script>
+</body>
+</html>

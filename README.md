@@ -12,8 +12,15 @@ Use Chrome or a Chromium-based browser (WebHID required).
 
 - **Dark theme UI** optimized for readability
 - **Categorized Android TV usages** (Power, Navigation, Media, Volume, Apps, System)
-- **Quick Actions tab** with one-click common mappings (Remap Voice Control, Macro Combos)
-- **Layer Switcher** - interactive UI to create layer toggle (2 layers, Sticky) or layer cycle (3+ layers) with any key
+- **Quick Actions tab** with grid-button shortcuts for Android TV, Browser, and Windows key combos
+- **Example Configs** as color-coded categorized cards (Keyboard, Mouse, Macros, Expressions, Windows)
+- **Expression Builder** - visual block-based editor (powered by Google Blockly) for building RPN expressions without writing code
+  - Categorized toolbox: Input, Logic, Math, Memory, Time, Trig/Advanced
+  - Unified input picker with all mouse, keyboard, and gamepad inputs in one dropdown
+  - 7 starter templates (Button Hold, Scale Mouse, Invert Axis, If/Then/Else, Clamp, Combo, Threshold)
+  - RPN parser that loads existing expressions back into visual blocks when clicking Edit
+  - Close confirmation dialog to prevent losing work
+- **Expression UX** - snippets dropdown, copy/paste buttons, and Edit button linking to the visual builder
 - **Drag-and-drop reorder** for mappings
 - **Improved UX** for Sticky/Tap/Hold with clear help text and tooltips
 - **Android TV HID descriptor** (firmware) with Consumer Control outputs for all standard remote keys
@@ -27,8 +34,8 @@ This is a USB HID remapper that sits between your remote's USB receiver and the 
 1. Flash the appropriate firmware to your RP2040-based board (see [original docs](https://github.com/jfedor2/hid-remapper#how-to-make-the-device))
 2. Open the [config tool](https://qutaiba-khader.github.io/hid-remapper-demo/)
 3. Click **Open device** to connect via WebHID
-4. Use the **Quick Actions** tab for common Android TV mappings
-5. Use the **Layer Switcher** to set up profile switching (e.g., Power toggles between normal and media layers)
+4. Use the **Quick Actions** tab for common Android TV mappings and example configs
+5. Use the **Expression Builder** (click Edit on any expression field) to visually create expressions
 6. Click **Save to device** when done
 
 ## Acknowledgments

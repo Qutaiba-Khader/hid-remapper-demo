@@ -10188,6 +10188,270 @@ const examples = [
             ],
             "quirks": []
         }
+    },
+    {
+        'description': 'Windows: Alt+Tab (next app)',
+        'config': {
+            "version": 6,
+            "unmapped_passthrough_layers": [0],
+            "partial_scroll_timeout": 1000000,
+            "interval_override": 0,
+            "tap_hold_threshold": 200000,
+            "gpio_debounce_time": 5,
+            "our_descriptor_number": 0,
+            "macro_entry_duration": 1,
+            "gpio_output_mode": 0,
+            "mappings": [
+                {
+                    "source_usage": "0x000c00cf",
+                    "target_usage": "0xfff20001",
+                    "scaling": 1000,
+                    "layers": [0],
+                    "sticky": false,
+                    "tap": false,
+                    "hold": false
+                }
+            ],
+            "macros": [
+                [["0x000700e2", "0x0007002b"]],
+                [], [], [], [], [], [], [],
+                [], [], [], [], [], [], [], [],
+                [], [], [], [], [], [], [], [],
+                [], [], [], [], [], [], [], []
+            ],
+            "expressions": ["", "", "", "", "", "", "", ""]
+        }
+    },
+    {
+        'description': 'Windows: Alt+Shift+Tab (previous app)',
+        'config': {
+            "version": 6,
+            "unmapped_passthrough_layers": [0],
+            "partial_scroll_timeout": 1000000,
+            "interval_override": 0,
+            "tap_hold_threshold": 200000,
+            "gpio_debounce_time": 5,
+            "our_descriptor_number": 0,
+            "macro_entry_duration": 1,
+            "gpio_output_mode": 0,
+            "mappings": [
+                {
+                    "source_usage": "0x000c00cf",
+                    "target_usage": "0xfff20001",
+                    "scaling": 1000,
+                    "layers": [0],
+                    "sticky": false,
+                    "tap": false,
+                    "hold": false
+                }
+            ],
+            "macros": [
+                [["0x000700e2", "0x000700e1", "0x0007002b"]],
+                [], [], [], [], [], [], [],
+                [], [], [], [], [], [], [], [],
+                [], [], [], [], [], [], [], [],
+                [], [], [], [], [], [], [], []
+            ],
+            "expressions": ["", "", "", "", "", "", "", ""]
+        }
+    },
+    {
+        'description': 'Windows: Win+Tab (Task View)',
+        'config': {
+            "version": 6,
+            "unmapped_passthrough_layers": [0],
+            "partial_scroll_timeout": 1000000,
+            "interval_override": 0,
+            "tap_hold_threshold": 200000,
+            "gpio_debounce_time": 5,
+            "our_descriptor_number": 0,
+            "macro_entry_duration": 1,
+            "gpio_output_mode": 0,
+            "mappings": [
+                {
+                    "source_usage": "0x000c00cf",
+                    "target_usage": "0xfff20001",
+                    "scaling": 1000,
+                    "layers": [0],
+                    "sticky": false,
+                    "tap": false,
+                    "hold": false
+                }
+            ],
+            "macros": [
+                [["0x000700e3", "0x0007002b"]],
+                [], [], [], [], [], [], [],
+                [], [], [], [], [], [], [], [],
+                [], [], [], [], [], [], [], [],
+                [], [], [], [], [], [], [], []
+            ],
+            "expressions": ["", "", "", "", "", "", "", ""]
+        }
+    },
+    {
+        'description': 'Windows: Alt+F4 (close window)',
+        'config': {
+            "version": 6,
+            "unmapped_passthrough_layers": [0],
+            "partial_scroll_timeout": 1000000,
+            "interval_override": 0,
+            "tap_hold_threshold": 200000,
+            "gpio_debounce_time": 5,
+            "our_descriptor_number": 0,
+            "macro_entry_duration": 1,
+            "gpio_output_mode": 0,
+            "mappings": [
+                {
+                    "source_usage": "0x000c00cf",
+                    "target_usage": "0xfff20001",
+                    "scaling": 1000,
+                    "layers": [0],
+                    "sticky": false,
+                    "tap": false,
+                    "hold": false
+                }
+            ],
+            "macros": [
+                [["0x000700e2", "0x0007003d"]],
+                [], [], [], [], [], [], [],
+                [], [], [], [], [], [], [], [],
+                [], [], [], [], [], [], [], [],
+                [], [], [], [], [], [], [], []
+            ],
+            "expressions": ["", "", "", "", "", "", "", ""]
+        }
+    },
+    {
+        'description': 'Windows: Win+D (show desktop)',
+        'config': {
+            "version": 6,
+            "unmapped_passthrough_layers": [0],
+            "partial_scroll_timeout": 1000000,
+            "interval_override": 0,
+            "tap_hold_threshold": 200000,
+            "gpio_debounce_time": 5,
+            "our_descriptor_number": 0,
+            "macro_entry_duration": 1,
+            "gpio_output_mode": 0,
+            "mappings": [
+                {
+                    "source_usage": "0x000c00cf",
+                    "target_usage": "0xfff20001",
+                    "scaling": 1000,
+                    "layers": [0],
+                    "sticky": false,
+                    "tap": false,
+                    "hold": false
+                }
+            ],
+            "macros": [
+                [["0x000700e3", "0x00070007"]],
+                [], [], [], [], [], [], [],
+                [], [], [], [], [], [], [], [],
+                [], [], [], [], [], [], [], [],
+                [], [], [], [], [], [], [], []
+            ],
+            "expressions": ["", "", "", "", "", "", "", ""]
+        }
+    },
+    {
+        'description': 'Windows: Ctrl+Shift+Esc (Task Manager)',
+        'config': {
+            "version": 6,
+            "unmapped_passthrough_layers": [0],
+            "partial_scroll_timeout": 1000000,
+            "interval_override": 0,
+            "tap_hold_threshold": 200000,
+            "gpio_debounce_time": 5,
+            "our_descriptor_number": 0,
+            "macro_entry_duration": 1,
+            "gpio_output_mode": 0,
+            "mappings": [
+                {
+                    "source_usage": "0x000c00cf",
+                    "target_usage": "0xfff20001",
+                    "scaling": 1000,
+                    "layers": [0],
+                    "sticky": false,
+                    "tap": false,
+                    "hold": false
+                }
+            ],
+            "macros": [
+                [["0x000700e0", "0x000700e1", "0x00070029"]],
+                [], [], [], [], [], [], [],
+                [], [], [], [], [], [], [], [],
+                [], [], [], [], [], [], [], [],
+                [], [], [], [], [], [], [], []
+            ],
+            "expressions": ["", "", "", "", "", "", "", ""]
+        }
+    },
+    {
+        'description': 'Windows: Win+L (lock PC)',
+        'config': {
+            "version": 6,
+            "unmapped_passthrough_layers": [0],
+            "partial_scroll_timeout": 1000000,
+            "interval_override": 0,
+            "tap_hold_threshold": 200000,
+            "gpio_debounce_time": 5,
+            "our_descriptor_number": 0,
+            "macro_entry_duration": 1,
+            "gpio_output_mode": 0,
+            "mappings": [
+                {
+                    "source_usage": "0x000c00cf",
+                    "target_usage": "0xfff20001",
+                    "scaling": 1000,
+                    "layers": [0],
+                    "sticky": false,
+                    "tap": false,
+                    "hold": false
+                }
+            ],
+            "macros": [
+                [["0x000700e3", "0x0007000f"]],
+                [], [], [], [], [], [], [],
+                [], [], [], [], [], [], [], [],
+                [], [], [], [], [], [], [], [],
+                [], [], [], [], [], [], [], []
+            ],
+            "expressions": ["", "", "", "", "", "", "", ""]
+        }
+    },
+    {
+        'description': 'Windows: Win+Shift+S (screenshot)',
+        'config': {
+            "version": 6,
+            "unmapped_passthrough_layers": [0],
+            "partial_scroll_timeout": 1000000,
+            "interval_override": 0,
+            "tap_hold_threshold": 200000,
+            "gpio_debounce_time": 5,
+            "our_descriptor_number": 0,
+            "macro_entry_duration": 1,
+            "gpio_output_mode": 0,
+            "mappings": [
+                {
+                    "source_usage": "0x000c00cf",
+                    "target_usage": "0xfff20001",
+                    "scaling": 1000,
+                    "layers": [0],
+                    "sticky": false,
+                    "tap": false,
+                    "hold": false
+                }
+            ],
+            "macros": [
+                [["0x000700e3", "0x000700e1", "0x00070016"]],
+                [], [], [], [], [], [], [],
+                [], [], [], [], [], [], [], [],
+                [], [], [], [], [], [], [], [],
+                [], [], [], [], [], [], [], []
+            ],
+            "expressions": ["", "", "", "", "", "", "", ""]
+        }
     }
 ];
 

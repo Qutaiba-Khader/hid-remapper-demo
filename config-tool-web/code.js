@@ -168,6 +168,10 @@ const ignored_usages = new Set([
 ]);
 let modal_return_mapping = null;
 let modal_return_element = null;
+let recentColors = [];
+let activeColorMapping = null;
+let activeColorClone = null;
+let paletteHideTimeout = null;
 
 document.addEventListener("DOMContentLoaded", function () {
     document.getElementById("open_device").addEventListener("click", open_device);
@@ -226,13 +230,6 @@ document.addEventListener("DOMContentLoaded", function () {
     document.querySelectorAll('.combo_badge').forEach(badge => {
         badge.addEventListener("click", () => create_macro_from_combo(badge));
     });
-
-    document.getElementById("create_layer_switcher").addEventListener("click", create_layer_switcher);
-
-    document.querySelectorAll('.layer_switcher_check:not(:disabled)').forEach(cb => {
-        cb.addEventListener("change", update_layer_switcher_hint);
-    });
-    update_layer_switcher_hint();
 
     document.getElementById("sort_by_input").addEventListener("click", sort_by_input);
 
@@ -819,6 +816,37 @@ function add_mapping(mapping) {
     const scaling_input = clone.querySelector(".scaling_input");
     scaling_input.value = mapping['scaling'] / 1000;
     scaling_input.addEventListener("input", scaling_onchange(mapping, scaling_input));
+    const color_input = clone.querySelector(".color_input");
+    const row_color = mapping['color'] || '';
+    if (row_color) {
+        color_input.value = row_color;
+        clone.style.backgroundColor = row_color + '20';
+        clone.style.borderLeft = '3px solid ' + row_color;
+    } else {
+        color_input.value = '#6c757d';
+    }
+    color_input.addEventListener("change", function () {
+        mapping['color'] = color_input.value;
+        clone.style.backgroundColor = color_input.value + '20';
+        clone.style.borderLeft = '3px solid ' + color_input.value;
+        pushRecentColor(color_input.value);
+    });
+    color_input.addEventListener("dblclick", function (e) {
+        e.preventDefault();
+        delete mapping['color'];
+        color_input.value = '#6c757d';
+        clone.style.backgroundColor = '';
+        clone.style.borderLeft = '';
+    });
+    color_input.addEventListener("mouseenter", function () {
+        if (recentColors.length === 0) return;
+        activeColorMapping = mapping;
+        activeColorClone = clone;
+        showColorPalette(color_input, mapping, clone);
+    });
+    color_input.addEventListener("mouseleave", function () {
+        schedulePaletteHide();
+    });
     for (let i = 0; i < NLAYERS; i++) {
         const layer_checkbox = clone.querySelector(".layer_checkbox" + i);
         layer_checkbox.checked = mapping['layers'].includes(i);
@@ -1368,74 +1396,6 @@ function create_macro_from_combo(badge) {
     new bootstrap.Collapse(document.getElementById('collapse_' + target_index), { toggle: true });
 }
 
-let pending_layer_switcher = null;
-
-function update_layer_switcher_hint() {
-    const layers = get_selected_switcher_layers();
-    const hint = document.getElementById('layer_switcher_hint');
-    if (layers.length < 2) {
-        hint.textContent = 'Select at least 2 layers.';
-    } else if (layers.length === 2) {
-        hint.textContent = 'Toggle: Layer ' + layers[0] + ' ↔ Layer ' + layers[1] + ' (Sticky)';
-    } else {
-        hint.textContent = 'Cycle: ' + layers.map(l => 'L' + l).join(' → ') + ' → L' + layers[0] + ' (Sticky)';
-    }
-}
-
-function get_selected_switcher_layers() {
-    const checks = document.querySelectorAll('.layer_switcher_check:checked');
-    return Array.from(checks).map(cb => parseInt(cb.value)).sort();
-}
-
-function create_layer_switcher() {
-    const layers = get_selected_switcher_layers();
-    if (layers.length < 2) {
-        display_error("Select at least 2 layers.");
-        return;
-    }
-    pending_layer_switcher = layers;
-    const modal_element = document.getElementById('source_usage_modal');
-    modal_element.querySelectorAll('.usage_button').forEach((button) => {
-        let clone = button.cloneNode(true);
-        button.parentNode.replaceChild(clone, button);
-        clone.addEventListener("click", function () {
-            source_modal.hide();
-            const source_usage = clone.getAttribute('data-hid-usage');
-            finish_layer_switcher(source_usage);
-        });
-    });
-    const modal_el = document.getElementById('source_usage_modal');
-    modal_el.addEventListener('shown.bs.modal', function handler() {
-        modal_el.removeEventListener('shown.bs.modal', handler);
-        modal_el.querySelector('.modal-body').scrollTop = 0;
-        modal_el.scrollIntoView({ behavior: 'instant' });
-    });
-    source_modal.show();
-}
-
-function finish_layer_switcher(source_usage) {
-    const layers = pending_layer_switcher;
-    pending_layer_switcher = null;
-    if (!layers) return;
-
-    for (let i = 0; i < layers.length; i++) {
-        const current = layers[i];
-        const next = layers[(i + 1) % layers.length];
-        const target_usage = '0xfff1000' + next;
-        let mapping = {
-            'source_usage': source_usage,
-            'target_usage': target_usage,
-            'layers': [current],
-            'sticky': true,
-            'tap': false, 'hold': false,
-            'scaling': 1000,
-            'source_port': 0, 'target_port': 0,
-        };
-        config['mappings'].push(mapping);
-        add_mapping(mapping);
-    }
-    switch_to_mappings_tab();
-}
 
 let drag_source_el = null;
 let drag_original_idx = -1;
@@ -1729,7 +1689,36 @@ function setup_expressions() {
         let clone = template.content.cloneNode(true).firstElementChild;
         clone.id = 'expression_' + i;
         clone.querySelector('.expression_label').innerText = 'Expression ' + (i + 1);
-        clone.querySelector('.expression_input').addEventListener("input", expression_onchange(i));
+        const textarea = clone.querySelector('.expression_input');
+        textarea.addEventListener("input", expression_onchange(i));
+        clone.querySelector('.expr-snippet-select').addEventListener("change", function () {
+            if (this.value) {
+                const sep = textarea.value.trim() ? ' ' : '';
+                textarea.value = textarea.value.trimEnd() + sep + this.value;
+                textarea.dispatchEvent(new Event('input'));
+                this.selectedIndex = 0;
+                textarea.focus();
+            }
+        });
+        clone.querySelector('.expr-copy-btn').addEventListener("click", function () {
+            navigator.clipboard.writeText(textarea.value);
+            this.textContent = 'Copied!';
+            setTimeout(() => { this.textContent = 'Copy'; }, 1000);
+        });
+        clone.querySelector('.expr-paste-btn').addEventListener("click", function () {
+            navigator.clipboard.readText().then(text => {
+                textarea.value = text;
+                textarea.dispatchEvent(new Event('input'));
+                this.textContent = 'Pasted!';
+                setTimeout(() => { this.textContent = 'Paste'; }, 1000);
+            });
+        });
+        clone.querySelector('.expr-edit-btn').addEventListener("click", function () {
+            const params = new URLSearchParams();
+            params.set('idx', i);
+            params.set('expr', textarea.value);
+            window.open('expression-builder/?' + params.toString(), '_blank');
+        });
         expr_container.appendChild(clone);
     }
 }
@@ -1857,31 +1846,106 @@ function add_example(n) {
     switch_to_mappings_tab();
 }
 
+function pushRecentColor(color) {
+    recentColors = recentColors.filter(c => c !== color);
+    recentColors.unshift(color);
+    if (recentColors.length > 5) recentColors.length = 5;
+}
+
+function showColorPalette(inputEl, mapping, clone) {
+    clearTimeout(paletteHideTimeout);
+    const palette = document.getElementById('color_palette');
+    const dotsContainer = document.getElementById('color_palette_dots');
+    dotsContainer.innerHTML = '';
+    for (const c of recentColors) {
+        const dot = document.createElement('div');
+        dot.className = 'recent_dot';
+        dot.style.backgroundColor = c;
+        dot.title = c;
+        dot.addEventListener('click', function (e) {
+            e.stopPropagation();
+            mapping['color'] = c;
+            inputEl.value = c;
+            clone.style.backgroundColor = c + '20';
+            clone.style.borderLeft = '3px solid ' + c;
+            pushRecentColor(c);
+            palette.classList.add('d-none');
+        });
+        dotsContainer.appendChild(dot);
+    }
+    const rect = inputEl.getBoundingClientRect();
+    palette.style.left = (rect.left + window.scrollX - 20) + 'px';
+    palette.style.top = (rect.top + window.scrollY - 32) + 'px';
+    palette.classList.remove('d-none');
+    palette.addEventListener('mouseenter', function () {
+        clearTimeout(paletteHideTimeout);
+    });
+    palette.addEventListener('mouseleave', function () {
+        schedulePaletteHide();
+    });
+}
+
+function schedulePaletteHide() {
+    clearTimeout(paletteHideTimeout);
+    paletteHideTimeout = setTimeout(function () {
+        document.getElementById('color_palette').classList.add('d-none');
+    }, 300);
+}
+
 function setup_examples() {
     const element = document.getElementById("examples");
-    const template = document.getElementById("example_template");
-    const keep = new Set([
-        'map caps lock to control',
-        'swap left/right mouse buttons',
-        'disable windows keys',
-        'macros: double-click and "Hello, world!"',
-        'tap-hold: middle button is middle-click when clicked, but switches layer when held',
-        'invert scroll wheel direction',
-        'Voice Command toggles mouse-scroll mode',
-        'Voice Command toggles mouse-scroll mode (keep cursor)',
-        'moving the mouse scrolls when middle button held',
-        'expressions: gamepad-to-mouse adapter',
-        'expressions: middle button enables mouse jiggler',
-        'expressions: auto-click left mouse button when cursor stops moving',
-        'mouse to analog stick',
-    ]);
+    const categories = [
+        { label: 'Keyboard', icon: '⌨', color: '#6366f1', items: [
+            'map caps lock to control', 'swap left/right mouse buttons', 'disable windows keys',
+        ]},
+        { label: 'Mouse & Scroll', icon: '🖱', color: '#22d3ee', items: [
+            'invert scroll wheel direction', 'moving the mouse scrolls when middle button held',
+            'Voice Command toggles mouse-scroll mode', 'Voice Command toggles mouse-scroll mode (keep cursor)',
+            'mouse to analog stick',
+        ]},
+        { label: 'Macros & Tap-Hold', icon: '⚡', color: '#f59e0b', items: [
+            'macros: double-click and "Hello, world!"',
+            'tap-hold: middle button is middle-click when clicked, but switches layer when held',
+        ]},
+        { label: 'Expressions', icon: '𝑓x', color: '#a78bfa', items: [
+            'expressions: gamepad-to-mouse adapter', 'expressions: middle button enables mouse jiggler',
+            'expressions: auto-click left mouse button when cursor stops moving',
+        ]},
+        { label: 'Windows Shortcuts', icon: '⊞', color: '#38bdf8', items: [
+            'Windows: Alt+Tab (next app)', 'Windows: Alt+Shift+Tab (previous app)',
+            'Windows: Win+Tab (Task View)', 'Windows: Alt+F4 (close window)',
+            'Windows: Win+D (show desktop)', 'Windows: Ctrl+Shift+Esc (Task Manager)',
+            'Windows: Win+L (lock PC)', 'Windows: Win+Shift+S (screenshot)',
+        ]},
+    ];
+    const descToIndex = {};
     for (let i = 0; i < examples.length; i++) {
-        if (!keep.has(examples[i]['description'])) continue;
-        const clone = template.content.cloneNode(true).firstElementChild;
-        clone.querySelector('.example_label').innerText = examples[i]['description'];
-        clone.querySelector('.example_add_btn').addEventListener("click", () => add_example(i));
-        clone.querySelector('.example_replace_btn').addEventListener("click", () => load_example(i));
-        element.appendChild(clone);
+        descToIndex[examples[i]['description']] = i;
+    }
+    for (const cat of categories) {
+        const header = document.createElement('div');
+        header.className = 'example-cat-header';
+        header.innerHTML = '<span class="example-cat-icon" style="color:' + cat.color + '">' + cat.icon + '</span> ' + cat.label;
+        header.style.borderColor = cat.color + '40';
+        element.appendChild(header);
+        const grid = document.createElement('div');
+        grid.className = 'example-grid';
+        for (const desc of cat.items) {
+            const idx = descToIndex[desc];
+            if (idx === undefined) continue;
+            const btn = document.createElement('button');
+            btn.className = 'example-card';
+            btn.style.setProperty('--card-accent', cat.color);
+            const short = desc
+                .replace(/^(expressions|macros|tap-hold|Windows): /i, '')
+                .replace(/^(Voice Command toggles )/, '')
+                .replace(/ when clicked, but switches layer when held/, ' / hold = layer');
+            btn.innerHTML = '<span class="example-card-label">' + short + '</span>' +
+                '<span class="example-card-badge" style="background:' + cat.color + '30;color:' + cat.color + '">+ Add</span>';
+            btn.addEventListener("click", () => add_example(idx));
+            grid.appendChild(btn);
+        }
+        element.appendChild(grid);
     }
 }
 
