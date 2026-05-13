@@ -1,10 +1,10 @@
-# HID Remapper - Android TV Remote Edition
+# HID Remapper VX - Visual Enhanced
 
 A customized fork of [jfedor2/hid-remapper](https://github.com/jfedor2/hid-remapper) tailored for Android TV remote control remapping.
 
 ## Live Config Tool
 
-**[Open Configuration Tool](https://qutaiba-khader.github.io/hid-remapper-demo/)**
+**[Open Configuration Tool](https://qutaiba-khader.github.io/hid-remapper-vx/)**
 
 Use Chrome or a Chromium-based browser (WebHID required).
 
@@ -32,7 +32,7 @@ This is a USB HID remapper that sits between your remote's USB receiver and the 
 ## Quick Start
 
 1. Flash the appropriate firmware to your RP2040-based board (see [original docs](https://github.com/jfedor2/hid-remapper#how-to-make-the-device))
-2. Open the [config tool](https://qutaiba-khader.github.io/hid-remapper-demo/)
+2. Open the [config tool](https://qutaiba-khader.github.io/hid-remapper-vx/)
 3. Click **Open device** to connect via WebHID
 4. Use the **Quick Actions** tab for common Android TV mappings and example configs
 5. Use the **Expression Builder** (click Edit on any expression field) to visually create expressions
