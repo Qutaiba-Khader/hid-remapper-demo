@@ -1,6 +1,6 @@
 # Changelog
 
-## Android TV Remote Edition - v1.0 (2026-05-05)
+## VX — Visual Enhanced - v1.0 (2026-05-05)
 
 ### Config Tool Web UI
 - Dark theme with custom CSS variables (`--bg-primary`, `--accent`, etc.)

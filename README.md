@@ -1,6 +1,6 @@
 # HID Remapper VX - Visual Enhanced
 
-A customized fork of [jfedor2/hid-remapper](https://github.com/jfedor2/hid-remapper) tailored for Android TV remote control remapping.
+A visually enhanced fork of [jfedor2/hid-remapper](https://github.com/jfedor2/hid-remapper) with a dark-themed config tool, visual Expression Builder, Quick Actions, and Example Configs for Android TV, Browser, and Windows remapping.
 
 ## Live Config Tool
 
