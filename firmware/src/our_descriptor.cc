@@ -23,19 +23,11 @@ const uint8_t our_report_descriptor_kb_mouse[] = {
     0x95, 0x08,                //   Report Count (8)
     0x81, 0x02,                //   Input (Data,Var,Abs,No Wrap,Linear,Preferred State,No Null Position)
     0x19, 0x04,                //   Usage Minimum (0x04)
-    0x29, 0x73,                //   Usage Maximum (0x73)
-    0x95, 0x70,                //   Report Count (112)
+    0x29, 0xA4,                //   Usage Maximum (0xA4)
+    0x95, 0xA1,                //   Report Count (161)
     0x81, 0x02,                //   Input (Data,Var,Abs,No Wrap,Linear,Preferred State,No Null Position)
-    0x19, 0x87,                //   Usage Minimum (0x87)
-    0x29, 0x8B,                //   Usage Maximum (0x8B)
-    0x95, 0x05,                //   Report Count (5)
-    0x81, 0x02,                //   Input (Data,Var,Abs,No Wrap,Linear,Preferred State,No Null Position)
-    0x09, 0x90,                //   Usage (0x90)
-    0x09, 0x91,                //   Usage (0x91)
-    0x95, 0x02,                //   Report Count (2)
-    0x81, 0x02,                //   Input (Data,Var,Abs,No Wrap,Linear,Preferred State,No Null Position)
-    0x95, 0x01,                //   Report Count (1)
-    0x81, 0x03,                //   Input (Const,Var,Abs,No Wrap,Linear,Preferred State,No Null Position)
+    0x95, 0x07,                //   Report Count (7)
+    0x81, 0x03,                //   Input (Const) - padding to byte boundary
     0x85, REPORT_ID_LEDS,      //   Report ID (REPORT_ID_LEDS)
     0x05, 0x08,                //   Usage Page (LEDs)
     0x95, 0x05,                //   Report Count (5)
@@ -222,6 +214,22 @@ const uint8_t our_report_descriptor_kb_mouse[] = {
     0x95, 0x05,                //   Report Count (5)
     0x81, 0x01,                //   Input (Const) - padding to byte boundary
     0xC0,                      // End Collection
+
+    0x05, 0x01,                    // Usage Page (Generic Desktop Ctrls)
+    0x09, 0x80,                    // Usage (System Control)
+    0xA1, 0x01,                    // Collection (Application)
+    0x85, REPORT_ID_SYSCONTROL,    //   Report ID (REPORT_ID_SYSCONTROL)
+    0x15, 0x00,                    //   Logical Minimum (0)
+    0x25, 0x01,                    //   Logical Maximum (1)
+    0x75, 0x01,                    //   Report Size (1)
+    0x09, 0x81,                    //   Usage (System Power Down)
+    0x09, 0x82,                    //   Usage (System Sleep)
+    0x09, 0x83,                    //   Usage (System Wake Up)
+    0x95, 0x03,                    //   Report Count (3)
+    0x81, 0x02,                    //   Input (Data,Var,Abs)
+    0x95, 0x05,                    //   Report Count (5)
+    0x81, 0x03,                    //   Input (Const) - padding
+    0xC0,                          // End Collection
 };
 
 const uint8_t our_report_descriptor_absolute[] = {
@@ -238,19 +246,11 @@ const uint8_t our_report_descriptor_absolute[] = {
     0x95, 0x08,                //   Report Count (8)
     0x81, 0x02,                //   Input (Data,Var,Abs,No Wrap,Linear,Preferred State,No Null Position)
     0x19, 0x04,                //   Usage Minimum (0x04)
-    0x29, 0x73,                //   Usage Maximum (0x73)
-    0x95, 0x70,                //   Report Count (112)
+    0x29, 0xA4,                //   Usage Maximum (0xA4)
+    0x95, 0xA1,                //   Report Count (161)
     0x81, 0x02,                //   Input (Data,Var,Abs,No Wrap,Linear,Preferred State,No Null Position)
-    0x19, 0x87,                //   Usage Minimum (0x87)
-    0x29, 0x8B,                //   Usage Maximum (0x8B)
-    0x95, 0x05,                //   Report Count (5)
-    0x81, 0x02,                //   Input (Data,Var,Abs,No Wrap,Linear,Preferred State,No Null Position)
-    0x09, 0x90,                //   Usage (0x90)
-    0x09, 0x91,                //   Usage (0x91)
-    0x95, 0x02,                //   Report Count (2)
-    0x81, 0x02,                //   Input (Data,Var,Abs,No Wrap,Linear,Preferred State,No Null Position)
-    0x95, 0x01,                //   Report Count (1)
-    0x81, 0x03,                //   Input (Const,Var,Abs,No Wrap,Linear,Preferred State,No Null Position)
+    0x95, 0x07,                //   Report Count (7)
+    0x81, 0x03,                //   Input (Const) - padding to byte boundary
     0x85, REPORT_ID_LEDS,      //   Report ID (REPORT_ID_LEDS)
     0x05, 0x08,                //   Usage Page (LEDs)
     0x95, 0x05,                //   Report Count (5)
@@ -437,6 +437,22 @@ const uint8_t our_report_descriptor_absolute[] = {
     0x95, 0x05,                //   Report Count (5)
     0x81, 0x01,                //   Input (Const) - padding to byte boundary
     0xC0,                      // End Collection
+
+    0x05, 0x01,                    // Usage Page (Generic Desktop Ctrls)
+    0x09, 0x80,                    // Usage (System Control)
+    0xA1, 0x01,                    // Collection (Application)
+    0x85, REPORT_ID_SYSCONTROL,    //   Report ID (REPORT_ID_SYSCONTROL)
+    0x15, 0x00,                    //   Logical Minimum (0)
+    0x25, 0x01,                    //   Logical Maximum (1)
+    0x75, 0x01,                    //   Report Size (1)
+    0x09, 0x81,                    //   Usage (System Power Down)
+    0x09, 0x82,                    //   Usage (System Sleep)
+    0x09, 0x83,                    //   Usage (System Wake Up)
+    0x95, 0x03,                    //   Report Count (3)
+    0x81, 0x02,                    //   Input (Data,Var,Abs)
+    0x95, 0x05,                    //   Report Count (5)
+    0x81, 0x03,                    //   Input (Const) - padding
+    0xC0,                          // End Collection
 };
 
 const uint8_t our_report_descriptor_horipad[] = {
@@ -714,7 +730,7 @@ uint16_t kb_mouse_handle_get_report(uint8_t report_id, uint8_t* buffer, uint16_t
 }
 
 bool kb_mouse_should_cause_wakeup(uint8_t report_id, const uint8_t* buffer, uint16_t len) {
-    if ((report_id == REPORT_ID_KEYBOARD) || (report_id == REPORT_ID_CONSUMER)) {
+    if ((report_id == REPORT_ID_KEYBOARD) || (report_id == REPORT_ID_CONSUMER) || (report_id == REPORT_ID_SYSCONTROL)) {
         for (uint16_t i = 0; i < len; i++) {
             if (buffer[i] != 0) {
                 return true;
